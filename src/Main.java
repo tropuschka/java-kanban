@@ -1,3 +1,9 @@
+import managing.TaskManager;
+import taskmodels.TaskStatus;
+import taskmodels.Epic;
+import taskmodels.Subtask;
+import taskmodels.Task;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -11,14 +17,14 @@ public class Main {
 
         Epic epic1 = new Epic(1, "First epic", "A complicated task with two subtasks");
         manager.createEpic(epic1);
-        Subtask subtask11 = new Subtask(1, "First subtask", "The first subtask of the first epic", 1, 1);
+        Subtask subtask11 = new Subtask(1, "First subtask", "The first subtask of the first epic", 1);
         manager.createSubtask(subtask11);
-        Subtask subtask12 = new Subtask(2, "Second subtask", "The second subtask of the first epic", 1, 2);
+        Subtask subtask12 = new Subtask(2, "Second subtask", "The second subtask of the first epic", 1);
         manager.createSubtask(subtask12);
 
         Epic epic2 = new Epic(2, "Second epic", "A complicated task with one subtask");
         manager.createEpic(epic2);
-        Subtask subtask21 = new Subtask(3, "First subtask", "The first subtask of the second epic", 2, 1);
+        Subtask subtask21 = new Subtask(3, "First subtask", "The first subtask of the second epic", 2);
         manager.createSubtask(subtask21);
 
         System.out.println(manager.getAllEpic());

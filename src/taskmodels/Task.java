@@ -1,3 +1,5 @@
+package taskmodels;
+
 import java.util.Objects;
 
 public class Task {
@@ -11,25 +13,6 @@ public class Task {
         this.name = name;
         this.details = details;
         status = TaskStatus.NEW;
-    }
-
-    @Override
-    public String toString() {
-        return getId() + ". " + getName() + "\nСтатус: " + getStatus() + "\n" + getDetails();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Task task = (Task) o;
-        return Objects.equals(name, task.name) && Objects.equals(details, task.details) &&
-                Objects.equals(id, task.id) && status == task.status;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, details, id, status);
     }
 
     public String getName() {
@@ -62,5 +45,24 @@ public class Task {
 
     public void setStatus(TaskStatus status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return getId() + ". " + getName() + "\nСтатус: " + getStatus() + "\n" + getDetails();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return Objects.equals(name, task.name) && Objects.equals(details, task.details) &&
+                Objects.equals(id, task.id) && status == task.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, details, id, status);
     }
 }
