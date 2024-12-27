@@ -34,10 +34,6 @@ public class Epic extends Task {
         return subtasks;
     }
 
-    public void setSubtasks(ArrayList<Integer> subtasks) {
-        this.subtasks = subtasks;
-    }
-
     @Override
     public String toString() {
         return getId() + ". " + getName() + " (эпик)\nСтатус: " + getStatus() + "\n" + getDetails();
