@@ -27,11 +27,22 @@ public class Epic extends Task {
     }
 
     public void deleteSubtask(int subtaskId) {
-        subtasks.remove(subtaskId);
+        subtasks.remove((Integer) subtaskId);
     }
 
     public ArrayList<Integer> getSubtasks() {
         return subtasks;
+    }
+
+    private void setSubtasks(ArrayList<Integer> subtasks) {
+        this.subtasks = new ArrayList<>(subtasks);
+    }
+
+    public Epic createHistoryExample() {
+        Epic newTask = new Epic(super.getId(), super.getName(), super.getDetails());
+        newTask.setStatus(super.getStatus());
+        newTask.setSubtasks(subtasks);
+        return newTask;
     }
 
     @Override

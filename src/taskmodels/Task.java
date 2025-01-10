@@ -47,6 +47,12 @@ public class Task {
         this.status = status;
     }
 
+    public Task createHistoryExample() {
+        Task newTask = new Task(id, name, details);
+        newTask.setStatus(status);
+        return newTask;
+    }
+
     @Override
     public String toString() {
         return getId() + ". " + getName() + "\nСтатус: " + getStatus() + "\n" + getDetails();

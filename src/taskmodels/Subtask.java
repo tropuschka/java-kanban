@@ -18,6 +18,12 @@ public class Subtask extends Task {
         this.epicId = epicId;
     }
 
+    public Subtask createHistoryExample() {
+        Subtask newTask = new Subtask(super.getId(), super.getName(), super.getDetails(), epicId);
+        newTask.setStatus(super.getStatus());
+        return newTask;
+    }
+
     @Override
     public String toString() {
         return "    " + getId() + ") " + getName() + "\n        Статус: " + getStatus() +

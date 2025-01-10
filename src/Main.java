@@ -1,5 +1,4 @@
-import managing.InMemoryTaskManager;
-import managing.TaskManager;
+import managing.*;
 import taskmodels.Epic;
 import taskmodels.Subtask;
 import taskmodels.Task;
@@ -8,7 +7,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-        InMemoryTaskManager manager = new InMemoryTaskManager();
+        Managers managers = new Managers();
+        InMemoryTaskManager manager = managers.createTaskManager();
+        InMemoryHistoryManager historyManager = managers.createHistoryManager();
 
         Task task1 = new Task(1, "First task", "Common task");
         manager.createTask(task1);
@@ -43,10 +44,10 @@ public class Main {
         manager.findTaskById(4);
         manager.findTaskById(4);
 
-        printAllTasks(manager);
+        printAllTasks(manager, historyManager);
     }
 
-    private static void printAllTasks(TaskManager manager) {
+    private static void printAllTasks(TaskManager manager, HistoryManager historyManager) {
         System.out.println("Задачи:");
         for (Task task : manager.getAllTasks()) {
             System.out.println(task);
@@ -65,7 +66,7 @@ public class Main {
         }
 
         System.out.println("История:");
-        for (Task task : manager.getHistory()) {
+        for (Task task : historyManager.getHistory()) {
             System.out.println(task);
         }
     }
