@@ -1,11 +1,11 @@
 package managing;
 
 public class Managers {
-    public InMemoryTaskManager createTaskManager() {
+    public static TaskManager createTaskManager() {
         return new InMemoryTaskManager();
     }
 
-    public InMemoryHistoryManager createHistoryManager() {
+    public static HistoryManager createHistoryManager() {
         return new InMemoryHistoryManager();
     }
 }

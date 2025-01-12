@@ -7,9 +7,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Managers managers = new Managers();
-        InMemoryTaskManager manager = managers.createTaskManager();
-        InMemoryHistoryManager historyManager = managers.createHistoryManager();
+        TaskManager manager = Managers.createTaskManager();
+        HistoryManager historyManager = Managers.createHistoryManager();
 
         Task task1 = new Task(1, "First task", "Common task");
         manager.createTask(task1);
