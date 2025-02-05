@@ -70,7 +70,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task findTaskById (Integer id) {
+    public Task findTaskById(Integer id) {
         Task targetTask = commonTasks.get(id);
         history.add(targetTask);
         return targetTask;
@@ -114,7 +114,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Epic findEpicById (Integer id) {
+    public Epic findEpicById(Integer id) {
         Epic targetEpic = epics.get(id);
         history.add(targetEpic);
         return targetEpic;
