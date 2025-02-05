@@ -17,7 +17,7 @@ public interface TaskManager {
 
     void deleteAllTasks();
 
-    Task findTaskById (Integer id);
+    Task findTaskById(Integer id);
 
     Epic createEpic(Epic epic);
 
