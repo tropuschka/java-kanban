@@ -15,9 +15,8 @@ class InMemoryHistoryManagerTest {
     @BeforeAll
     static void historyManagerCreation() {
         manager = new InMemoryHistoryManager();
-        task = new Task(1, "Task", "Task description");
         for (int i = 0; i < 9; i++) {
-            manager.add(task);
+            manager.add(new Task(i, "Task", "Task description"));
         }
 
     }
@@ -26,14 +25,20 @@ class InMemoryHistoryManagerTest {
     void returningHistory() {
         ArrayList<Task> taskArray = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
-            taskArray.add(task);
+            taskArray.add(new Task(i, "Task", "Task description"));
         }
         assertEquals(manager.getHistory(), taskArray);
     }
 
     @Test
-    void ifHistoryMaxSize10() {
-        manager.add(task);
-        assertEquals(manager.getHistory().size(), 10);
+    void changingNodesWhenTaskAddedAgain() {
+        ArrayList<Task> taskArray = new ArrayList<>();
+        for (int i = 0; i < 9; i++) {
+            taskArray.add(new Task(i, "Task", "Task description"));
+        }
+        manager.add(new Task(3, "Task", "Task description"));
+        taskArray.set(3, new Task(3, "Task", "Task description"));
+
+        assertEquals(manager.getHistory(), taskArray);
     }
 }
