@@ -1,7 +1,5 @@
 package managing;
 
-import java.util.ArrayList;
-
 public class Node<T> {
     private Node<T> prev;
     private T data;
