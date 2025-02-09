@@ -44,11 +44,14 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public void remove(int id) {
         Node toRemove = linkedHistory.get(id);
-        toRemove.removeNode();
+        Node targetPrev = toRemove.prev;
+        Node targetNext = toRemove.next;
+        if (targetNext != null) targetNext = targetPrev;
+        if (targetPrev != null) targetPrev = targetNext;
         linkedHistory.remove(id);
     }
 
-    class Node {
+    private static class Node {
         private Node prev;
         private Task data;
         private Node next;
@@ -57,13 +60,6 @@ public class InMemoryHistoryManager implements HistoryManager {
             this.prev = prev;
             this.data = data;
             this.next = null;
-        }
-
-        public void removeNode() {
-            Node targetPrev = prev;
-            Node targetNext = next;
-            if (targetNext != null) targetNext = targetPrev;
-            if (targetPrev != null) targetPrev = targetNext;
         }
     }
 }
