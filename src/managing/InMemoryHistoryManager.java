@@ -10,6 +10,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     private Node head;
     private Node tail;
 
+    @Override
     public ArrayList<Task> getHistory() {
         ArrayList<Task> history = new ArrayList<>();
         Node currentNode = head;
@@ -44,6 +45,8 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public void remove(int id) {
         Node toRemove = linkedHistory.get(id);
+        if (toRemove == head) head = toRemove.next;
+        if (toRemove == tail) tail = toRemove.prev;
         Node targetPrev = toRemove.prev;
         Node targetNext = toRemove.next;
         if (targetNext != null) targetNext = targetPrev;
