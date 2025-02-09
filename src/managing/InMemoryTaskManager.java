@@ -56,6 +56,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task deleteTask(Integer id) {
+        history.remove(id);
         return commonTasks.remove(id);
     }
 
@@ -66,6 +67,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllTasks() {
+        for (Integer task : commonTasks.keySet()) {
+            history.remove(task);
+        }
         commonTasks.clear();
     }
 
@@ -96,7 +100,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteEpic(Integer id) {
         Epic epic = epics.get(id);
+        history.remove(epic.getId());
         for (Integer subtask : epic.getSubtasks()) {
+            history.remove(subtask);
             subtasks.remove(subtask);
         }
         epics.remove(id);
@@ -109,6 +115,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllEpics() {
+        for (Integer epic : epics.keySet()) {
+            history.remove(epic);
+        }
         subtasks.clear();
         epics.clear();
     }
@@ -133,6 +142,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteEpicSubtasks(Epic epic) {
         for (Integer id : epic.getSubtasks()) {
+            history.remove(id);
             subtasks.remove(id);
         }
         epic.clearAllSubs();
@@ -167,6 +177,7 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epics.get(subtask.getEpicId());
         epic.deleteSubtask(subtask.getId());
         updateEpicStatus(epic);
+        history.remove(subtask.getId());
         subtasks.remove(subtask.getId());
     }
 
@@ -177,6 +188,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllSubtasks() {
+        for (Integer subtask : subtasks.keySet()) {
+            history.remove(subtask);
+        }
         subtasks.clear();
         for (Epic epic : epics.values()) {
             epic.clearAllSubs();

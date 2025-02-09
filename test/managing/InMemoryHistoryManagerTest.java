@@ -1,6 +1,7 @@
 package managing;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import taskmodels.Task;
 
@@ -12,8 +13,8 @@ class InMemoryHistoryManagerTest {
     static InMemoryHistoryManager manager;
     static Task task;
 
-    @BeforeAll
-    static void historyManagerCreation() {
+    @BeforeEach
+    void historyManagerRefill() {
         manager = new InMemoryHistoryManager();
         for (int i = 0; i < 9; i++) {
             manager.add(new Task(i, "Task", "Task description"));
