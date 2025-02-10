@@ -44,22 +44,15 @@ public class InMemoryHistoryManager implements HistoryManager {
     public void remove(int id) {
         Node toRemove = linkedHistory.get(id);
         if (toRemove != null) {
-            Node targetNext = null;
-            Node targetPrev = null;
-            if (toRemove == head && toRemove != tail) head = toRemove.next;
-            if (toRemove == tail && toRemove != head) tail = toRemove.prev;
-            if (head == tail) {
-                head = null;
-                tail = null;
-            }
-            if (toRemove.next != null) {
-                targetNext = toRemove.next;
-            }
             if (toRemove.prev != null) {
-                targetPrev = toRemove.prev;
+                toRemove.prev.next = toRemove.next;
+                if (toRemove.next == null) tail = toRemove.prev;
+                else toRemove.next.prev = toRemove.prev;
+            } else {
+                head = toRemove.next;
+                if (head == null) tail = null;
+                else head.prev = null;
             }
-            if (targetNext != null) targetNext.prev = targetPrev;
-            if (targetPrev != null) targetPrev.next = targetNext;
             linkedHistory.remove(id);
         }
     }
