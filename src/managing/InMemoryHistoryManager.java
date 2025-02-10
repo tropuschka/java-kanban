@@ -28,11 +28,10 @@ public class InMemoryHistoryManager implements HistoryManager {
             Node taskNode;
 
             if (linkedHistory.containsKey(task.getId())) remove(task.getId());
+            taskNode = new Node(historyTask, tail);
             if (head == null) {
-                taskNode = new Node(historyTask, null);
                 head = taskNode;
             } else {
-                taskNode = new Node(historyTask, tail);
                 tail.next = taskNode;
             }
             tail = taskNode;
