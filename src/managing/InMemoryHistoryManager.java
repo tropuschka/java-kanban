@@ -48,6 +48,10 @@ public class InMemoryHistoryManager implements HistoryManager {
             Node targetPrev = null;
             if (toRemove == head && toRemove != tail) head = toRemove.next;
             if (toRemove == tail && toRemove != head) tail = toRemove.prev;
+            if (head == tail) {
+                head = null;
+                tail = null;
+            }
             if (toRemove.next != null) {
                 targetNext = toRemove.next;
             }

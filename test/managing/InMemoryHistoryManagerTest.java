@@ -3,6 +3,7 @@ package managing;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import taskmodels.Epic;
 import taskmodels.Task;
 
 import java.util.ArrayList;
@@ -104,5 +105,20 @@ class InMemoryHistoryManagerTest {
         taskArray.remove(2);
 
         assertEquals(manager.getHistory(), taskArray);
+    }
+
+    @Test
+    void deleteAll() {
+        for (int i = 0; i < 3; i++) manager.remove(i);
+        ArrayList<Epic> empty = new ArrayList<>();
+        assertEquals(manager.getHistory(), empty);
+    }
+
+    @Test
+    void deleteFromEmpty() {
+        InMemoryHistoryManager manager2 = new InMemoryHistoryManager();
+        manager2.remove(1);
+        ArrayList<Epic> empty = new ArrayList<>();
+        assertEquals(manager2.getHistory(), empty);
     }
 }
