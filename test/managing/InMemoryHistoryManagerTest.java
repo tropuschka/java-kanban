@@ -16,7 +16,7 @@ class InMemoryHistoryManagerTest {
     @BeforeEach
     void historyManagerRefill() {
         manager = new InMemoryHistoryManager();
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 3; i++) {
             manager.add(new Task(i, "Task", "Task description"));
         }
 
@@ -25,7 +25,7 @@ class InMemoryHistoryManagerTest {
     @Test
     void returningHistory() {
         ArrayList<Task> taskArray = new ArrayList<>();
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 3; i++) {
             taskArray.add(new Task(i, "Task", "Task description"));
         }
         assertEquals(manager.getHistory(), taskArray);
@@ -34,12 +34,12 @@ class InMemoryHistoryManagerTest {
     @Test
     void changingNodesWhenTaskAddedAgain() {
         ArrayList<Task> taskArray = new ArrayList<>();
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 3; i++) {
             taskArray.add(new Task(i, "Task", "Task description"));
         }
-        manager.add(new Task(3, "Task", "Task description"));
-        taskArray.remove(3);
-        taskArray.add(new Task(3, "Task", "Task description"));
+        manager.add(new Task(1, "Task", "Task description"));
+        taskArray.remove(1);
+        taskArray.add(new Task(1, "Task", "Task description"));
 
         assertEquals(manager.getHistory(), taskArray);
     }
@@ -47,12 +47,12 @@ class InMemoryHistoryManagerTest {
     @Test
     void changingNodesWhenTailAddedAgain() {
         ArrayList<Task> taskArray = new ArrayList<>();
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 3; i++) {
             taskArray.add(new Task(i, "Task", "Task description"));
         }
-        manager.add(new Task(8, "Task", "Task description"));
-        taskArray.remove(8);
-        taskArray.add(new Task(8, "Task", "Task description"));
+        manager.add(new Task(2, "Task", "Task description"));
+        taskArray.remove(2);
+        taskArray.add(new Task(2, "Task", "Task description"));
 
         assertEquals(manager.getHistory(), taskArray);
     }
@@ -60,12 +60,48 @@ class InMemoryHistoryManagerTest {
     @Test
     void changingNodesWhenHeadAddedAgain() {
         ArrayList<Task> taskArray = new ArrayList<>();
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 3; i++) {
             taskArray.add(new Task(i, "Task", "Task description"));
         }
         manager.add(new Task(0, "Task", "Task description"));
         taskArray.remove(0);
         taskArray.add(new Task(0, "Task", "Task description"));
+
+        assertEquals(manager.getHistory(), taskArray);
+    }
+
+    @Test
+    void deleteMiddleNode() {
+        ArrayList<Task> taskArray = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            taskArray.add(new Task(i, "Task", "Task description"));
+        }
+        manager.remove(1);
+        taskArray.remove(1);
+
+        assertEquals(manager.getHistory(), taskArray);
+    }
+
+    @Test
+    void deleteHead() {
+        ArrayList<Task> taskArray = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            taskArray.add(new Task(i, "Task", "Task description"));
+        }
+        manager.remove(0);
+        taskArray.remove(0);
+
+        assertEquals(manager.getHistory(), taskArray);
+    }
+
+    @Test
+    void deleteTail() {
+        ArrayList<Task> taskArray = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            taskArray.add(new Task(i, "Task", "Task description"));
+        }
+        manager.remove(2);
+        taskArray.remove(2);
 
         assertEquals(manager.getHistory(), taskArray);
     }
