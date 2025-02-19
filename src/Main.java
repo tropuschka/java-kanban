@@ -17,7 +17,7 @@ public class Main {
         Task task3 = new Task(3, "Third task", "Common task");
         manager.createTask(task3);
         Task task4 = new Task(4, "Fourth task", "Common task");
-        manager.createTask(task2);
+        manager.createTask(task4);
         Epic epic1 = new Epic(5, "First epic", "Epic task");
         manager.createEpic(epic1);
         Subtask subtask1 = new Subtask(6, "First subtask", "Small task", 5);
@@ -26,7 +26,7 @@ public class Main {
         manager.createEpic(epic2);
         Subtask subtask2 = new Subtask(8, "First subtask", "Small task", 7);
         manager.createSubtask(subtask2);
-        Subtask subtask3= new Subtask(9, "Second subtask", "Small task", 7);
+        Subtask subtask3 = new Subtask(9, "Second subtask", "Small task", 7);
         manager.createSubtask(subtask3);
         Epic epic3 = new Epic(10, "Third epic", "Epic task");
         manager.createEpic(epic3);

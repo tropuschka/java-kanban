@@ -17,7 +17,7 @@ public interface TaskManager {
 
     void deleteAllTasks();
 
-    Task findTaskById (Integer id);
+    Task findTaskById(Integer id);
 
     Epic createEpic(Epic epic);
 
@@ -29,7 +29,7 @@ public interface TaskManager {
 
     void deleteAllEpics();
 
-    Epic findEpicById (Integer id);
+    Epic findEpicById(Integer id);
 
     ArrayList<Subtask> getEpicSubtasks(Epic epic);
 
@@ -45,7 +45,7 @@ public interface TaskManager {
 
     Subtask findSubtaskById(Integer id);
 
-    public ArrayList<Task> getHistory();
+    ArrayList<Task> getHistory();
 
-    public void deleteEpicSubtasks(Epic epic);
+    void deleteEpicSubtasks(Epic epic);
 }
