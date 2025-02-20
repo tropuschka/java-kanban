@@ -3,10 +3,15 @@ package managing;
 import taskmodels.Epic;
 import taskmodels.Subtask;
 import taskmodels.Task;
+import taskmodels.TaskStatus;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     public void save() {
@@ -27,6 +32,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         } catch (IOException e) {
             System.out.println("Ошибка при записи файла");
         }
+    }
+
+    public Task fromString(String taskString) {
+        String[] taskList = taskString.split(",");
+        Task task;
+        if (taskList[1].equals("EPIC")) {
+            task = new Epic(Integer.parseInt(taskList[0]), taskList[2], taskList[4]);
+        } else if (taskList[1].equals("SUBTASK")) {
+            task = new Subtask(Integer.parseInt(taskList[0]), taskList[2], taskList[4], Integer.parseInt(taskList[5]));
+        } else {
+            task = new Task(Integer.parseInt(taskList[0]), taskList[2], taskList[4]);
+        }
+        task.setStatus(TaskStatus.valueOf(taskList[3]));
+        return task;
     }
 
     @Override
