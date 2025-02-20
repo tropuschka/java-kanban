@@ -5,13 +5,8 @@ import taskmodels.Subtask;
 import taskmodels.Task;
 import taskmodels.TaskStatus;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     public void save() {
@@ -30,11 +25,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 fw.write(epicString + "\n");
             }
         } catch (IOException e) {
-            System.out.println("Ошибка при записи файла");
+            System.out.println("Ошибка записи файла");
         }
     }
 
-    public Task fromString(String taskString) {
+    public static Task fromString(String taskString) {
         String[] taskList = taskString.split(",");
         Task task;
         if (taskList[1].equals("EPIC")) {
@@ -46,6 +41,24 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
         task.setStatus(TaskStatus.valueOf(taskList[3]));
         return task;
+    }
+
+    public static FileBackedTaskManager loadFromFile(File file) {
+        FileBackedTaskManager fileBackedTM = new FileBackedTaskManager();
+        try (FileReader fr = new FileReader(file, StandardCharsets.UTF_8); BufferedReader br = new BufferedReader(fr)) {
+            while (br.ready()) {
+                String line = br.readLine();
+                Task task = null;
+                if (!line.split(",")[0].equals("id")) task = fromString(line);
+                
+                if (line.split(",")[1].equals("EPIC")) fileBackedTM.createEpic((Epic) task);
+                else if (line.split(",")[1].equals("SUBTASK")) fileBackedTM.createSubtask((Subtask) task);
+                else fileBackedTM.createTask(task);
+            }
+        } catch (IOException e) {
+            System.out.println("Ошибка чтения файла");
+        }
+        return fileBackedTM;
     }
 
     @Override
