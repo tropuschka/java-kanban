@@ -58,6 +58,11 @@ public class Task {
         return getId() + ". " + getName() + "\nСтатус: " + getStatus() + "\n" + getDetails();
     }
 
+    public String toFile() {
+        //id,type,name,status,description,epic
+        return getId() + ",TASK," + getName() + "," + getStatus() + "," + getDetails();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

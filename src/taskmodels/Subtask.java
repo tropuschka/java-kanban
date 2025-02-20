@@ -31,6 +31,12 @@ public class Subtask extends Task {
     }
 
     @Override
+    public String toFile() {
+        //id,type,name,status,description,epic
+        return getId() + ",SUBTASK," + getName() + "," + getStatus() + "," + getDetails() + "," + getEpicId();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
