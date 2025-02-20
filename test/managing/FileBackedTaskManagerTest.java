@@ -5,6 +5,10 @@ import org.junit.jupiter.api.Test;
 import taskmodels.Epic;
 import taskmodels.Subtask;
 import taskmodels.Task;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -47,6 +51,11 @@ public class FileBackedTaskManagerTest {
 
     @Test
     void downloadTMFromFile() {
-
+        Task task = new Task(1, "Task", "Some task");
+        fileBackedTM.createTask(task);
+        Path path = Paths.get("C:\\Users\\Galya\\Desktop\\Yandex\\java-kanban\\tasks.txt");
+        File file = path.toFile();
+        FileBackedTaskManager taskManagerFromFile = FileBackedTaskManager.loadFromFile(file);
+        assertEquals(fileBackedTM.getAllTasks(), taskManagerFromFile.getAllTasks());
     }
 }
