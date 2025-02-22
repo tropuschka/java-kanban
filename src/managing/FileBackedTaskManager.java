@@ -32,15 +32,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager fileBackedTM = new FileBackedTaskManager();
         try (FileReader fr = new FileReader(file, StandardCharsets.UTF_8); BufferedReader br = new BufferedReader(fr)) {
+            br.readLine();
             while (br.ready()) {
                 String line = br.readLine();
                 Task task;
-                TaskType type = TaskType.valueOf(line.split(",")[1]);
+                String typeString = line.split(",")[1];
+                TaskType type = TaskType.valueOf(typeString);
                 if (!line.split(",")[0].equals("id")) {
                     task = TaskFromString.fromString(line);
-                    if (type.equals(TaskType.EPIC)) fileBackedTM.createEpic((Epic) task);
-                    else if (type.equals(TaskType.SUBTASK)) fileBackedTM.createSubtask((Subtask) task);
-                    else fileBackedTM.createTask(task);
+                    if (type.equals(TaskType.EPIC)) fileBackedTM.epics.put(task.getId(), (Epic) task);
+                    else if (type.equals(TaskType.SUBTASK)) fileBackedTM.subtasks.put(task.getId(), (Subtask) task);
+                    else fileBackedTM.commonTasks.put(task.getId(), task);
                 }
             }
         } catch (IOException e) {

@@ -55,7 +55,7 @@ public class FileBackedTaskManagerTest {
         fileBackedTM.createTask(task);
         Path path = Paths.get("C:\\Users\\Galya\\Desktop\\Yandex\\java-kanban\\tasks.txt");
         File file = path.toFile();
-        FileBackedTaskManager taskManagerFromFile = FileBackedTaskManager.loadFromFile(file);
+        InMemoryTaskManager taskManagerFromFile = FileBackedTaskManager.loadFromFile(file);
         assertEquals(fileBackedTM.getAllTasks(), taskManagerFromFile.getAllTasks());
     }
 }
