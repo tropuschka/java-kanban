@@ -70,7 +70,7 @@ public class Task {
 
     public String toFile() {
         //id,type,name,status,description,epic
-        return getId() + ",TASK," + getName() + "," + getStatus() + "," + getDetails();
+        return getId() + "," + getType() + "," + getName() + "," + getStatus() + "," + getDetails();
     }
 
     @Override

@@ -52,12 +52,6 @@ public class Epic extends Task {
     }
 
     @Override
-    public String toFile() {
-        //id,type,name,status,description,epic
-        return getId() + ",EPIC," + getName() + "," + getStatus() + "," + getDetails();
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
