@@ -8,6 +8,7 @@ public class Epic extends Task {
 
     public Epic(Integer id, String name, String details) {
         super(id, name, details);
+        super.setType(TaskType.EPIC);
     }
 
     public String getWithSubs() {

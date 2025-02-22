@@ -7,12 +7,14 @@ public class Task {
     private String details;
     private Integer id;
     private TaskStatus status;
+    private TaskType type;
 
     public Task(Integer id, String name, String details) {
         this.id = id;
         this.name = name;
         this.details = details;
         status = TaskStatus.NEW;
+        type = TaskType.TASK;
     }
 
     public String getName() {
@@ -51,6 +53,14 @@ public class Task {
         Task newTask = new Task(id, name, details);
         newTask.setStatus(status);
         return newTask;
+    }
+
+    protected void setType(TaskType type) {
+        this.type = type;
+    }
+
+    public TaskType getType() {
+        return type;
     }
 
     @Override

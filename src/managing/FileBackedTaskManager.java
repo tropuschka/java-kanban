@@ -1,10 +1,7 @@
 package managing;
 
 import exceptions.ManagerSaveException;
-import taskmodels.Epic;
-import taskmodels.Subtask;
-import taskmodels.Task;
-import taskmodels.TaskStatus;
+import taskmodels.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -35,9 +32,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public static Task fromString(String taskString) {
         String[] taskList = taskString.split(",");
         Task task;
-        if (taskList[1].equals("EPIC")) {
+        TaskType type = TaskType.valueOf(taskList[1]);
+        if (type.equals(TaskType.EPIC)) {
             task = new Epic(Integer.parseInt(taskList[0]), taskList[2], taskList[4]);
-        } else if (taskList[1].equals("SUBTASK")) {
+        } else if (type.equals(TaskType.SUBTASK)) {
             task = new Subtask(Integer.parseInt(taskList[0]), taskList[2], taskList[4], Integer.parseInt(taskList[5]));
         } else {
             task = new Task(Integer.parseInt(taskList[0]), taskList[2], taskList[4]);
@@ -52,10 +50,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             while (br.ready()) {
                 String line = br.readLine();
                 Task task;
+                TaskType type = TaskType.valueOf(line.split(",")[1]);
                 if (!line.split(",")[0].equals("id")) {
                     task = fromString(line);
-                    if (line.split(",")[1].equals("EPIC")) fileBackedTM.createEpic((Epic) task);
-                    else if (line.split(",")[1].equals("SUBTASK")) fileBackedTM.createSubtask((Subtask) task);
+                    if (type.equals(TaskType.EPIC)) fileBackedTM.createEpic((Epic) task);
+                    else if (type.equals(TaskType.SUBTASK)) fileBackedTM.createSubtask((Subtask) task);
                     else fileBackedTM.createTask(task);
                 }
             }
