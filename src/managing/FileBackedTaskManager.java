@@ -48,7 +48,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try (FileReader fr = new FileReader(file, StandardCharsets.UTF_8); BufferedReader br = new BufferedReader(fr)) {
             while (br.ready()) {
                 String line = br.readLine();
-                Task task = null;
+                Task task;
                 if (!line.split(",")[0].equals("id")) {
                     task = fromString(line);
                     if (line.split(",")[1].equals("EPIC")) fileBackedTM.createEpic((Epic) task);
@@ -70,6 +70,25 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
+    public void updateTask(Task task) {
+        super.updateTask(task);
+        save();
+    }
+
+    @Override
+    public Task deleteTask(Integer id) {
+        super.deleteTask(id);
+        save();
+        return super.findTaskById(id);
+    }
+
+    @Override
+    public void deleteAllTasks() {
+        super.deleteAllTasks();
+        save();
+    }
+
+    @Override
     public Epic createEpic(Epic epic) {
         super.createEpic(epic);
         save();
@@ -77,9 +96,45 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
+    public void updateEpic(Epic epic) {
+        super.updateEpic(epic);
+        save();
+    }
+
+    @Override
+    public void deleteEpic(Integer id) {
+        super.deleteEpic(id);
+        save();
+    }
+
+    @Override
+    public void deleteAllEpics() {
+        super.deleteAllEpics();
+        save();
+    }
+
+    @Override
     public Subtask createSubtask(Subtask subtask) {
         super.createSubtask(subtask);
         save();
         return super.findSubtaskById(subtask.getId());
+    }
+
+    @Override
+    public void updateSubtask(Subtask subtask) {
+        super.updateSubtask(subtask);
+        save();
+    }
+
+    @Override
+    public void deleteSubtask(Subtask subtask) {
+        super.deleteSubtask(subtask);
+        save();
+    }
+
+    @Override
+    public void deleteAllSubtasks() {
+        super.deleteAllSubtasks();
+        save();
     }
 }
