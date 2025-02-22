@@ -29,21 +29,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    public static Task fromString(String taskString) {
-        String[] taskList = taskString.split(",");
-        Task task;
-        TaskType type = TaskType.valueOf(taskList[1]);
-        if (type.equals(TaskType.EPIC)) {
-            task = new Epic(Integer.parseInt(taskList[0]), taskList[2], taskList[4]);
-        } else if (type.equals(TaskType.SUBTASK)) {
-            task = new Subtask(Integer.parseInt(taskList[0]), taskList[2], taskList[4], Integer.parseInt(taskList[5]));
-        } else {
-            task = new Task(Integer.parseInt(taskList[0]), taskList[2], taskList[4]);
-        }
-        task.setStatus(TaskStatus.valueOf(taskList[3]));
-        return task;
-    }
-
     public static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager fileBackedTM = new FileBackedTaskManager();
         try (FileReader fr = new FileReader(file, StandardCharsets.UTF_8); BufferedReader br = new BufferedReader(fr)) {
@@ -52,7 +37,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 Task task;
                 TaskType type = TaskType.valueOf(line.split(",")[1]);
                 if (!line.split(",")[0].equals("id")) {
-                    task = fromString(line);
+                    task = TaskFromString.fromString(line);
                     if (type.equals(TaskType.EPIC)) fileBackedTM.createEpic((Epic) task);
                     else if (type.equals(TaskType.SUBTASK)) fileBackedTM.createSubtask((Subtask) task);
                     else fileBackedTM.createTask(task);
