@@ -21,41 +21,18 @@ public class FileBackedTaskManagerTest {
     }
 
     @Test
-    void createTask() {
-        Task task = new Task(1, "Task", "Some task");
-        fileBackedTM.createTask(task);
-        ArrayList taskArray = new ArrayList();
-        taskArray.add(task);
-        assertEquals(taskArray, fileBackedTM.getAllTasks());
-    }
-
-    @Test
-    void createEpic() {
-        Epic task = new Epic(1, "Task", "Some task");
-        fileBackedTM.createEpic(task);
-        ArrayList taskArray = new ArrayList();
-        taskArray.add(task);
-        assertEquals(taskArray, fileBackedTM.getAllEpic());
-    }
-
-    @Test
-    void createSubtask() {
-        Epic task = new Epic(1, "Task", "Some task");
-        fileBackedTM.createEpic(task);
-        Subtask subtask = new Subtask(2, "Subtask", "Some task", 1);
-        fileBackedTM.createSubtask(subtask);
-        ArrayList taskArray = new ArrayList();
-        taskArray.add(subtask);
-        assertEquals(taskArray, fileBackedTM.getAllSubtasks());
-    }
-
-    @Test
     void downloadTMFromFile() {
         Task task = new Task(1, "Task", "Some task");
+        Epic epic = new Epic(1, "Task", "Some task");
+        Subtask subtask = new Subtask(1, "Task", "Some task", 1);
         fileBackedTM.createTask(task);
+        fileBackedTM.createEpic(epic);
+        fileBackedTM.createSubtask(subtask);
         Path path = Paths.get("C:\\Users\\Galya\\Desktop\\Yandex\\java-kanban\\tasks.txt");
         File file = path.toFile();
-        InMemoryTaskManager taskManagerFromFile = FileBackedTaskManager.loadFromFile(file);
-        assertEquals(fileBackedTM.getAllTasks(), taskManagerFromFile.getAllTasks());
+        FileBackedTaskManager taskManagerFromFile = FileBackedTaskManager.loadFromFile(file);
+        assertTrue(fileBackedTM.getAllTasks().equals(taskManagerFromFile.getAllTasks()) &&
+                fileBackedTM.getAllEpic().equals(taskManagerFromFile.getAllEpic()) &&
+                fileBackedTM.getAllSubtasks().equals(taskManagerFromFile.getAllSubtasks()));
     }
 }
