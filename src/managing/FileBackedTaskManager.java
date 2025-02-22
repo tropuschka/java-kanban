@@ -1,5 +1,6 @@
 package managing;
 
+import exceptions.ManagerSaveException;
 import taskmodels.Epic;
 import taskmodels.Subtask;
 import taskmodels.Task;
@@ -26,6 +27,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());
+        } catch (ManagerSaveException e) {
+            throw new ManagerSaveException("Ошибка записи файла");
         }
     }
 
@@ -58,6 +61,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());
+        } catch (ManagerSaveException e) {
+            throw new ManagerSaveException("Ошибка загрузки менеджера из файла");
         }
         return fileBackedTM;
     }
