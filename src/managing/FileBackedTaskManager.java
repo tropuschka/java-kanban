@@ -23,8 +23,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 fw.write(epicString + "\n");
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
-        } catch (ManagerSaveException e) {
             throw new ManagerSaveException("Ошибка записи файла");
         }
     }
@@ -46,8 +44,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
-        } catch (ManagerSaveException e) {
             throw new ManagerSaveException("Ошибка загрузки менеджера из файла");
         }
         return fileBackedTM;
