@@ -7,7 +7,15 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
-    private File file = new File("tasks.txt");
+    private final File file;
+
+    public FileBackedTaskManager() {
+        this.file = new File("tasks.txt");
+    }
+
+    public FileBackedTaskManager(File file) {
+        this.file = file;
+    }
 
     public void save() {
         try (FileWriter fw = new FileWriter(file, StandardCharsets.UTF_8)) {
@@ -30,8 +38,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public static FileBackedTaskManager loadFromFile(File file) {
-        FileBackedTaskManager fileBackedTM = new FileBackedTaskManager();
-        fileBackedTM.file = file;
+        FileBackedTaskManager fileBackedTM = new FileBackedTaskManager(file);
         try (FileReader fr = new FileReader(file, StandardCharsets.UTF_8); BufferedReader br = new BufferedReader(fr)) {
             br.readLine();
             while (br.ready()) {
