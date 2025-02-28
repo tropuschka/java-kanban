@@ -8,7 +8,6 @@ import taskmodels.Task;
 import taskmodels.TaskStatus;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 

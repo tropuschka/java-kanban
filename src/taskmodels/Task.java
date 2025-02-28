@@ -53,9 +53,18 @@ public class Task {
         return newTask;
     }
 
+    public TaskType getType() {
+        return TaskType.TASK;
+    }
+
     @Override
     public String toString() {
         return getId() + ". " + getName() + "\nСтатус: " + getStatus() + "\n" + getDetails();
+    }
+
+    public String toFile() {
+        //id,type,name,status,description,epic
+        return getId() + "," + getType() + "," + getName() + "," + getStatus() + "," + getDetails();
     }
 
     @Override
