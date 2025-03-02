@@ -1,5 +1,7 @@
 package taskmodels;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -43,6 +45,19 @@ public class Epic extends Task {
         newTask.setStatus(super.getStatus());
         newTask.setSubtasks(subtasks);
         return newTask;
+    }
+
+    public void updateStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public void addDuration(Duration subtaskDuration) {
+        if (this.duration == null) this.duration = subtaskDuration;
+        else this.duration = this.duration.plus(subtaskDuration);
+    }
+
+    public void decreaseDuration(Duration subtaskDuration) {
+        this.duration = this.duration.minus(subtaskDuration);
     }
 
     @Override

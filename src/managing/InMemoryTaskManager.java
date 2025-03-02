@@ -157,6 +157,11 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epics.get(subtask.getEpicId());
         if (epic == null) updateEpicStatus(epic);
         epic.addSubtask(subtask.getId());
+        if ((epic.getSubtasks().isEmpty() || epic.getStartTime().isAfter(subtask.getStartTime())) &&
+                subtask.getStartTime() != null) {
+            epic.updateStartTime(subtask.getStartTime());
+        }
+        if (subtask.getDuration() != null) epic.addDuration(subtask.getDuration());
         return subtask;
     }
 
@@ -169,13 +174,23 @@ public class InMemoryTaskManager implements TaskManager {
             targetSubtask.setStatus(subtask.getStatus());
         }
         Epic epic = epics.get(subtask.getEpicId());
-        if (epic != null) updateEpicStatus(epic);
+        if (epic != null) {
+            updateEpicStatus(epic);
+            if (subtask.getDuration() != null) {
+                epic.decreaseDuration(targetSubtask.getDuration());
+                epic.addDuration(subtask.getDuration());
+            }
+            if ((epic.getStartTime().isAfter(subtask.getStartTime())) && subtask.getStartTime() != null) {
+                epic.updateStartTime(subtask.getStartTime());
+            }
+        }
     }
 
     @Override
     public void deleteSubtask(Subtask subtask) {
         Epic epic = epics.get(subtask.getEpicId());
         epic.deleteSubtask(subtask.getId());
+        if (subtask.getDuration() != null) epic.decreaseDuration(subtask.getDuration());
         updateEpicStatus(epic);
         history.remove(subtask.getId());
         subtasks.remove(subtask.getId());
