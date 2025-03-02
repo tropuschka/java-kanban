@@ -19,6 +19,15 @@ public class Task {
         status = TaskStatus.NEW;
     }
 
+    public Task(Integer id, String name, String details, LocalDateTime startTime, Duration duration) {
+        this.id = id;
+        this.name = name;
+        this.details = details;
+        status = TaskStatus.NEW;
+        this.startTime = startTime;
+        this.duration = duration;
+    }
+
     public String getName() {
         return name;
     }
