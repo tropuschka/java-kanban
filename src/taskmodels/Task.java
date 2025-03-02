@@ -88,8 +88,12 @@ public class Task {
     }
 
     public String toFile() {
-        //id,type,name,status,description,epic
-        return getId() + "," + getType() + "," + getName() + "," + getStatus() + "," + getDetails();
+        //id,type,name,status,description,start date,end date,epic
+        String line;
+        if (startTime != null) line = getId() + "," + getType() + "," + getName() + "," + getStatus() + ","
+                + getDetails() + "," + getStartTime() + "," + getEndTime();
+        else line = getId() + "," + getType() + "," + getName() + "," + getStatus() + "," + getDetails() + ",-,-";
+        return line;
     }
 
     @Override

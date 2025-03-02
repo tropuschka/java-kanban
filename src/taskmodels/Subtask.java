@@ -39,8 +39,13 @@ public class Subtask extends Task {
 
     @Override
     public String toFile() {
-        //id,type,name,status,description,epic
-        return getId() + "," + getType() + "," + getName() + "," + getStatus() + "," + getDetails() + "," + getEpicId();
+        //id,type,name,status,description,start date,end date,epic
+        String line;
+        if (startTime != null) line = getId() + "," + getType() + "," + getName() + "," + getStatus() + ","
+                + getDetails() + "," + getStartTime() + "," + getEndTime() + "," + getEpicId();
+        else line = getId() + "," + getType() + "," + getName() + "," + getStatus() + "," + getDetails() + ",-,-"
+                + "," + getEpicId();
+        return line;
     }
 
     @Override
