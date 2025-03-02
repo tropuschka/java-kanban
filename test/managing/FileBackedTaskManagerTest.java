@@ -22,7 +22,7 @@ public class FileBackedTaskManagerTest {
         Epic epic = new Epic(1, "Task", "Some task");
         Subtask subtask = new Subtask(1, "Task", "Some task", 1);
         file = File.createTempFile("tasks", ".txt");
-        fileBackedTM =  FileBackedTaskManager.loadFromFile(file);
+        fileBackedTM = new FileBackedTaskManager(file);
         fileBackedTM.createTask(task);
         fileBackedTM.createEpic(epic);
         fileBackedTM.createSubtask(subtask);
