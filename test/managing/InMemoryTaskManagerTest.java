@@ -32,11 +32,11 @@ class InMemoryTaskManagerTest {
         subtask1 = new Subtask(3, "Subtask", "Subtask description", 2);
         subtask2 = new Subtask(4, "Subtask", "Subtask description", 2);
         subtask3 = new Subtask(5, "Subtask", "Subtask description", 2);
-        taskWithDeadline = new Task(6, "Task", "Task", "01.01.2000, 07:00", "PT15M");
+        taskWithDeadline = new Task(6, "Task", "Task", "01.01.2000 07:00", "PT15M");
         epicWithDeadline = new Epic(7, "Epic", "Epic description");
-        subtask1WithDeadline = new Subtask(8, "Subtask", "Subtask description", 7, "02.01.2000, 07:00", "PT15M");
-        subtask2WithDeadline = new Subtask(9, "Subtask", "Subtask description", 7, "03.01.2000, 07:00", "PT15M");
-        subtask3WithDeadline = new Subtask(10, "Subtask", "Subtask description", 7, "04.01.2000, 07:00", "PT15M");
+        subtask1WithDeadline = new Subtask(8, "Subtask", "Subtask description", 7, "02.01.2000 07:00", "PT15M");
+        subtask2WithDeadline = new Subtask(9, "Subtask", "Subtask description", 7, "03.01.2000 07:00", "PT15M");
+        subtask3WithDeadline = new Subtask(10, "Subtask", "Subtask description", 7, "04.01.2000 07:00", "PT15M");
         taskManager.createTask(task);
         taskManager.createEpic(epic);
         taskManager.createSubtask(subtask1);
