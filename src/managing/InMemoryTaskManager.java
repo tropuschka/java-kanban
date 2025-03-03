@@ -15,7 +15,7 @@ public class InMemoryTaskManager implements TaskManager {
     protected HashMap<Integer, Epic> epics = new HashMap<>();
     protected HashMap<Integer, Subtask> subtasks = new HashMap<>();
     private final HistoryManager history = Managers.createHistoryManager();
-    protected DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm");
+    protected DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     private int generateId() {
         return ++taskAmount;
@@ -96,6 +96,8 @@ public class InMemoryTaskManager implements TaskManager {
         if (targetEpic != null) {
             targetEpic.setName(epic.getName());
             targetEpic.setDetails(epic.getDetails());
+            targetEpic.setDuration(epic.getDuration());
+            targetEpic.setStartTime(epic.getStartTime());
         }
     }
 
@@ -159,7 +161,7 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epics.get(subtask.getEpicId());
         if (epic == null) updateEpicStatus(epic);
         epic.addSubtask(subtask.getId());
-        if ((epic.getSubtasks() == null || (epic.getStartTime() != null
+        if ((epic.getStartTime() == null || (epic.getStartTime() != null
                 && epic.getStartTime().isAfter(subtask.getStartTime()))) && subtask.getStartTime() != null) {
             epic.updateStartTime(subtask.getStartTime());
         }
@@ -182,7 +184,7 @@ public class InMemoryTaskManager implements TaskManager {
                 epic.decreaseDuration(targetSubtask.getDuration());
                 epic.addDuration(subtask.getDuration());
             }
-            if ((epic.getSubtasks() == null || (epic.getStartTime() != null
+            if ((epic.getStartTime() == null || (epic.getStartTime() != null
                     && epic.getStartTime().isAfter(subtask.getStartTime()))) && subtask.getStartTime() != null) {
                 epic.updateStartTime(subtask.getStartTime());
             }

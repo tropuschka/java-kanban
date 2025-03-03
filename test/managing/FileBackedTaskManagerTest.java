@@ -19,13 +19,19 @@ public class FileBackedTaskManagerTest {
     @BeforeEach
     void createManager() throws IOException {
         Task task = new Task(1, "Task", "Some task");
-        Epic epic = new Epic(1, "Task", "Some task");
-        Subtask subtask = new Subtask(1, "Task", "Some task", 1);
+        Epic epic = new Epic(2, "Task", "Some task");
+        Subtask subtask = new Subtask(3, "Task", "Some task", 2);
+        Task taskWithTime = new Task(4, "Task", "Some task", "01.01.2000 07:00", "PT15M");
+        Epic epicWithTime = new Epic(5, "Task", "Some task");
+        Subtask subtaskWithTime = new Subtask(6, "Task", "Some task", 5, "02.01.2000 07:00", "PT15M");
         file = File.createTempFile("tasks", ".txt");
         fileBackedTM = new FileBackedTaskManager(file);
         fileBackedTM.createTask(task);
         fileBackedTM.createEpic(epic);
         fileBackedTM.createSubtask(subtask);
+        fileBackedTM.createTask(taskWithTime);
+        fileBackedTM.createEpic(epicWithTime);
+        fileBackedTM.createSubtask(subtaskWithTime);
     }
 
     @Test

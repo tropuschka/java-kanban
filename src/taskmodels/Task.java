@@ -12,7 +12,7 @@ public class Task {
     private TaskStatus status;
     protected LocalDateTime startTime;
     protected Duration duration;
-    protected DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm");
+    protected DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     public Task(Integer id, String name, String details) {
         this.id = id;
@@ -27,6 +27,7 @@ public class Task {
         this.details = details;
         status = TaskStatus.NEW;
         this.startTime = LocalDateTime.parse(startTime, formatter);
+        duration = duration.substring(2, duration.length() - 1);
         this.duration = Duration.ofMinutes(Integer.parseInt(duration));
     }
 
@@ -96,11 +97,6 @@ public class Task {
         return duration.toString();
     }
 
-    @Override
-    public String toString() {
-        return getId() + ". " + getName() + "\nСтатус: " + getStatus() + "\n" + getDetails();
-    }
-
     public String toFile() {
         //id,type,name,status,description,start date,end date,epic
         String line;
@@ -108,6 +104,11 @@ public class Task {
                 + getDetails() + "," + getStartTime().format(formatter) + "," + getEndTime().format(formatter);
         else line = getId() + "," + getType() + "," + getName() + "," + getStatus() + "," + getDetails() + ",-,-";
         return line;
+    }
+
+    @Override
+    public String toString() {
+        return getId() + ". " + getName() + "\nСтатус: " + getStatus() + "\n" + getDetails();
     }
 
     @Override
