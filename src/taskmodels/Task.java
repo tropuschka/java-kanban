@@ -2,6 +2,7 @@ package taskmodels;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Task {
@@ -11,6 +12,7 @@ public class Task {
     private TaskStatus status;
     protected LocalDateTime startTime;
     protected Duration duration;
+    protected DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm");
 
     public Task(Integer id, String name, String details) {
         this.id = id;
@@ -19,13 +21,13 @@ public class Task {
         status = TaskStatus.NEW;
     }
 
-    public Task(Integer id, String name, String details, LocalDateTime startTime, Duration duration) {
+    public Task(Integer id, String name, String details, String startTime, String duration) {
         this.id = id;
         this.name = name;
         this.details = details;
         status = TaskStatus.NEW;
-        this.startTime = startTime;
-        this.duration = duration;
+        this.startTime = LocalDateTime.parse(startTime, formatter);
+        this.duration = Duration.ofMinutes(Integer.parseInt(duration));
     }
 
     public String getName() {
@@ -82,6 +84,18 @@ public class Task {
         return duration;
     }
 
+    public String getParsedStartTime() {
+        return startTime.format(formatter);
+    }
+
+    public String getParsedEndTime() {
+        return getEndTime().format(formatter);
+    }
+
+    public String getStringDuration() {
+        return duration.toString();
+    }
+
     @Override
     public String toString() {
         return getId() + ". " + getName() + "\nСтатус: " + getStatus() + "\n" + getDetails();
@@ -91,7 +105,7 @@ public class Task {
         //id,type,name,status,description,start date,end date,epic
         String line;
         if (startTime != null) line = getId() + "," + getType() + "," + getName() + "," + getStatus() + ","
-                + getDetails() + "," + getStartTime() + "," + getEndTime();
+                + getDetails() + "," + getStartTime().format(formatter) + "," + getEndTime().format(formatter);
         else line = getId() + "," + getType() + "," + getName() + "," + getStatus() + "," + getDetails() + ",-,-";
         return line;
     }

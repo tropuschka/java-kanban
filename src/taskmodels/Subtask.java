@@ -12,7 +12,7 @@ public class Subtask extends Task {
         this.epicId = epicId;
     }
 
-    public Subtask(Integer id, String name, String details, Integer epicId, LocalDateTime startTime, Duration duration) {
+    public Subtask(Integer id, String name, String details, Integer epicId, String startTime, String duration) {
         super(id, name, details, startTime, duration);
         this.epicId = epicId;
     }
@@ -42,7 +42,8 @@ public class Subtask extends Task {
         //id,type,name,status,description,start date,end date,epic
         String line;
         if (startTime != null) line = getId() + "," + getType() + "," + getName() + "," + getStatus() + ","
-                + getDetails() + "," + getStartTime() + "," + getEndTime() + "," + getEpicId();
+                + getDetails() + "," + getStartTime().format(formatter) + "," + getEndTime().format(formatter) + ","
+                + getEpicId();
         else line = getId() + "," + getType() + "," + getName() + "," + getStatus() + "," + getDetails() + ",-,-"
                 + "," + getEpicId();
         return line;

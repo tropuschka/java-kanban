@@ -28,10 +28,11 @@ public class TaskFromString {
             task = new Epic(id, name, descr);
         } else if (type.equals(TaskType.SUBTASK)) {
             Integer epicId = Integer.parseInt(taskList[7]);
-            if (startDate != null) task = new Subtask(id, name, descr, epicId, startDate, duration);
+            if (startDate != null) task = new Subtask(id, name, descr, epicId, startDate.format(formatter),
+                    duration.toString());
             else task = new Subtask(id, name, descr, epicId);
         } else {
-            if (startDate != null) task = new Task(id, name, descr, startDate, duration);
+            if (startDate != null) task = new Task(id, name, descr, startDate.format(formatter), duration.toString());
             else task = new Task(id, name, descr);
         }
         task.setStatus(status);
