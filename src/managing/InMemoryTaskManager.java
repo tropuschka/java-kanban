@@ -157,8 +157,8 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epics.get(subtask.getEpicId());
         if (epic == null) updateEpicStatus(epic);
         epic.addSubtask(subtask.getId());
-        if ((epic.getSubtasks().isEmpty() || epic.getStartTime().isAfter(subtask.getStartTime())) &&
-                subtask.getStartTime() != null) {
+        if ((epic.getSubtasks() == null || (epic.getStartTime() != null
+                && epic.getStartTime().isAfter(subtask.getStartTime()))) && subtask.getStartTime() != null) {
             epic.updateStartTime(subtask.getStartTime());
         }
         if (subtask.getDuration() != null) epic.addDuration(subtask.getDuration());
@@ -180,7 +180,8 @@ public class InMemoryTaskManager implements TaskManager {
                 epic.decreaseDuration(targetSubtask.getDuration());
                 epic.addDuration(subtask.getDuration());
             }
-            if ((epic.getStartTime().isAfter(subtask.getStartTime())) && subtask.getStartTime() != null) {
+            if ((epic.getSubtasks() == null || (epic.getStartTime() != null
+                    && epic.getStartTime().isAfter(subtask.getStartTime()))) && subtask.getStartTime() != null) {
                 epic.updateStartTime(subtask.getStartTime());
             }
         }
