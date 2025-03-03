@@ -18,6 +18,11 @@ class InMemoryTaskManagerTest {
     Subtask subtask1;
     Subtask subtask2;
     Subtask subtask3;
+    Task taskWithDeadline;
+    Epic epicWithDeadline;
+    Subtask subtask1WithDeadline;
+    Subtask subtask2WithDeadline;
+    Subtask subtask3WithDeadline;
 
     @BeforeEach
     void createManager() {
@@ -27,16 +32,26 @@ class InMemoryTaskManagerTest {
         subtask1 = new Subtask(3, "Subtask", "Subtask description", 2);
         subtask2 = new Subtask(4, "Subtask", "Subtask description", 2);
         subtask3 = new Subtask(5, "Subtask", "Subtask description", 2);
+        taskWithDeadline = new Task(6, "Task", "Task", "01.01.2000, 07:00", "15");
+        epicWithDeadline = new Epic(7, "Epic", "Epic description");
+        subtask1WithDeadline = new Subtask(8, "Subtask", "Subtask description", 7, "02.01.2000, 07:00", "15");
+        subtask2WithDeadline = new Subtask(9, "Subtask", "Subtask description", 7, "03.01.2000, 07:00", "15");
+        subtask3WithDeadline = new Subtask(10, "Subtask", "Subtask description", 7, "04.01.2000, 07:00", "15");
         taskManager.createTask(task);
         taskManager.createEpic(epic);
         taskManager.createSubtask(subtask1);
         taskManager.createSubtask(subtask2);
         taskManager.createSubtask(subtask3);
+        taskManager.createTask(taskWithDeadline);
+        taskManager.createEpic(epicWithDeadline);
+        taskManager.createSubtask(subtask1WithDeadline);
+        taskManager.createSubtask(subtask2WithDeadline);
+        taskManager.createSubtask(subtask3WithDeadline);
     }
 
     @Test
     void returnNullIfSubtaskIsSelfEpic() {
-        Subtask selfEpicSubtask = new Subtask(6, "Subtask", "Subtask", 6);
+        Subtask selfEpicSubtask = new Subtask(11, "Subtask", "Subtask", 11);
         assertNull(taskManager.createSubtask(selfEpicSubtask));
     }
 
@@ -122,7 +137,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void deletingAllTasks() {
-        Task task2 = new Task(6, "Task", "Task description");
+        Task task2 = new Task(11, "Task", "Task description");
         taskManager.createTask(task2);
         taskManager.deleteAllTasks();
         ArrayList<Epic> empty = new ArrayList<>();
@@ -135,6 +150,7 @@ class InMemoryTaskManagerTest {
         taskManager.createTask(task2);
         ArrayList<Task> taskArray = new ArrayList<>();
         taskArray.add(task);
+        taskArray.add(taskWithDeadline);
         taskArray.add(task2);
         assertEquals(taskManager.getAllTasks(), taskArray);
     }
@@ -147,7 +163,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void deletingAllEpics() {
-        Epic epic2 = new Epic(6, "Task", "Task description");
+        Epic epic2 = new Epic(11, "Task", "Task description");
         taskManager.createEpic(epic2);
         taskManager.deleteAllEpics();
         ArrayList<Epic> empty = new ArrayList<>();
@@ -156,10 +172,11 @@ class InMemoryTaskManagerTest {
 
     @Test
     void gettingAllEpics() {
-        Epic epic2 = new Epic(6, "Task", "Task description");
+        Epic epic2 = new Epic(11, "Task", "Task description");
         taskManager.createEpic(epic2);
         ArrayList<Epic> taskArray = new ArrayList<>();
         taskArray.add(epic);
+        taskArray.add(epicWithDeadline);
         taskArray.add(epic2);
         assertEquals(taskManager.getAllEpic(), taskArray);
     }
@@ -183,6 +200,9 @@ class InMemoryTaskManagerTest {
         taskArray.add(subtask1);
         taskArray.add(subtask2);
         taskArray.add(subtask3);
+        taskArray.add(subtask1WithDeadline);
+        taskArray.add(subtask2WithDeadline);
+        taskArray.add(subtask3WithDeadline);
         assertEquals(taskManager.getAllSubtasks(), taskArray);
     }
 
