@@ -7,10 +7,8 @@ import taskmodels.TaskStatus;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.TreeSet;
+import java.util.*;
+import java.io.Serializable;
 
 public class InMemoryTaskManager implements TaskManager {
     private int taskAmount = 0;
@@ -19,12 +17,7 @@ public class InMemoryTaskManager implements TaskManager {
     protected HashMap<Integer, Subtask> subtasks = new HashMap<>();
     private final HistoryManager history = Managers.createHistoryManager();
     protected DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
-    private Comparator comparator = new Comparator<Task>() {
-        public int compare(Task task1, Task task2) {
-            return task1.getStartTime().getNano() - task2.getStartTime().getNano();
-        }
-    };
-    private TreeSet<Task> sortedTasks = new TreeSet<>(comparator);
+    private TreeSet<Task> sortedTasks = new TreeSet<>();
 
     private int generateId() {
         return ++taskAmount;
@@ -182,9 +175,9 @@ public class InMemoryTaskManager implements TaskManager {
         if ((epic.getStartTime() == null || (epic.getStartTime() != null
                 && epic.getStartTime().isAfter(subtask.getStartTime()))) && subtask.getStartTime() != null) {
             epic.updateStartTime(subtask.getStartTime());
-            sortedTasks.add(subtask);
         }
         if (subtask.getDuration() != null) epic.addDuration(subtask.getDuration());
+        if (subtask.getStartTime() != null) sortedTasks.add((Task) subtask);
         return subtask;
     }
 
@@ -206,9 +199,9 @@ public class InMemoryTaskManager implements TaskManager {
             if ((epic.getStartTime() == null || (epic.getStartTime() != null
                     && epic.getStartTime().isAfter(subtask.getStartTime()))) && subtask.getStartTime() != null) {
                 epic.updateStartTime(subtask.getStartTime());
+                sortedTasks.add(subtask);
             }
         }
-        if (subtask.getStartTime() != null) sortedTasks.add(subtask);
     }
 
     @Override
@@ -231,7 +224,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteAllSubtasks() {
         for (Integer subtask : subtasks.keySet()) {
             history.remove(subtask);
-            if (subtasks.get(subtask).getStartTime() != null) sortedTasks.add(subtasks.get(subtask));
+            if (subtasks.get(subtask).getStartTime() != null) sortedTasks.remove(subtasks.get(subtask));
         }
         subtasks.clear();
         for (Epic epic : epics.values()) {

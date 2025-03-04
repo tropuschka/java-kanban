@@ -1,5 +1,6 @@
 package managing;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import taskmodels.Epic;
@@ -7,7 +8,10 @@ import taskmodels.Subtask;
 import taskmodels.Task;
 import taskmodels.TaskStatus;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.TreeSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,7 +39,7 @@ class InMemoryTaskManagerTest {
         taskWithDeadline = new Task(6, "Task", "Task", "01.01.2000 07:00", "PT15M");
         epicWithDeadline = new Epic(7, "Epic", "Epic description");
         subtask1WithDeadline = new Subtask(8, "Subtask", "Subtask description", 7, "02.01.2000 07:00", "PT15M");
-        subtask2WithDeadline = new Subtask(9, "Subtask", "Subtask description", 7, "03.01.2000 07:00", "PT15M");
+        subtask2WithDeadline = new Subtask(9, "Subtask", "Subtask description", 7, "05.01.2000 07:00", "PT15M");
         subtask3WithDeadline = new Subtask(10, "Subtask", "Subtask description", 7, "04.01.2000 07:00", "PT15M");
         taskManager.createTask(task);
         taskManager.createEpic(epic);
@@ -227,5 +231,15 @@ class InMemoryTaskManagerTest {
         Epic newEpic = new Epic(2, "Epic", "New task description");
         taskManager.updateEpic(newEpic);
         assertNotEquals(new Epic(2, "Epic", "New task description"), taskManager.findEpicById(2));
+    }
+
+    @Test
+    void sortTasks() {
+        TreeSet<Task> sortedTasks = new TreeSet<>();
+        sortedTasks.add(taskWithDeadline);
+        sortedTasks.add(subtask3WithDeadline);
+        sortedTasks.add(subtask2WithDeadline);
+        sortedTasks.add(subtask1WithDeadline);
+        assertEquals(sortedTasks, taskManager.getPrioritizedTasks());
     }
 }
