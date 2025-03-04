@@ -242,4 +242,32 @@ class InMemoryTaskManagerTest {
         sortedTasks.add(subtask1WithDeadline);
         assertEquals(sortedTasks, taskManager.getPrioritizedTasks());
     }
+
+    @Test
+    void addOverlapSame() {
+        Task overlap = taskWithDeadline = new Task(11, "Task", "Task", "01.01.2000 07:00", "PT15M");
+        taskManager.createTask(overlap);
+        assertNull(taskManager.findTaskById(11));
+    }
+
+    @Test
+    void addOverlapBefore() {
+        Task overlap = taskWithDeadline = new Task(11, "Task", "Task", "01.01.2000 06:55", "PT15M");
+        taskManager.createTask(overlap);
+        assertNull(taskManager.findTaskById(11));
+    }
+
+    @Test
+    void addOverlapAfter() {
+        Task overlap = taskWithDeadline = new Task(11, "Task", "Task", "01.01.2000 07:05", "PT15M");
+        taskManager.createTask(overlap);
+        assertNull(taskManager.findTaskById(11));
+    }
+
+    @Test
+    void addOverlapIn() {
+        Task overlap = taskWithDeadline = new Task(11, "Task", "Task", "01.01.2000 07:05", "PT5M");
+        taskManager.createTask(overlap);
+        assertNull(taskManager.findTaskById(11));
+    }
 }

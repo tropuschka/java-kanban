@@ -40,19 +40,36 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
+    private boolean checkTaskOverlap(Task task) {
+        List<Task> tasks = new ArrayList<>(sortedTasks);
+        boolean overlap = tasks.stream()
+                .noneMatch(checkTask -> ((checkTask.getStartTime().isBefore(task.getStartTime())
+                        && checkTask.getEndTime().isAfter(task.getStartTime()))
+                        || (task.getStartTime().isBefore(checkTask.getStartTime())
+                        && task.getEndTime().isAfter(checkTask.getStartTime()))
+                        || (checkTask.getStartTime().isBefore(task.getStartTime())
+                        && checkTask.getEndTime().isAfter(task.getEndTime()))
+                        || (task.getStartTime().isBefore(checkTask.getStartTime())
+                        && task.getEndTime().isAfter(checkTask.getEndTime()))
+                        || checkTask.compareTo(task) == 0));
+        return overlap;
+    }
+
     @Override
     public Task createTask(Task task) {
-        Integer taskId = generateId();
-        task.setId(taskId);
-        commonTasks.put(task.getId(), task);
-        if (task.getStartTime() != null) sortedTasks.add(task);
+        if (task.getStartTime() == null || checkTaskOverlap(task)) {
+            Integer taskId = generateId();
+            task.setId(taskId);
+            commonTasks.put(task.getId(), task);
+            if (task.getStartTime() != null) sortedTasks.add(task);
+        }
         return task;
     }
 
     @Override
     public void updateTask(Task task) {
         Task targetTask = commonTasks.get(task.getId());
-        if (targetTask != null) {
+        if (targetTask != null && (task.getStartTime() == null || checkTaskOverlap(task))) {
             targetTask.setName(task.getName());
             targetTask.setDetails(task.getDetails());
             targetTask.setStatus(task.getStatus());
@@ -166,25 +183,27 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Subtask createSubtask(Subtask subtask) {
         if (subtask.getId() == subtask.getEpicId()) return null;
-        Integer subtaskId = generateId();
-        subtask.setId(subtaskId);
-        subtasks.put(subtask.getId(), subtask);
-        Epic epic = epics.get(subtask.getEpicId());
-        if (epic == null) updateEpicStatus(epic);
-        epic.addSubtask(subtask.getId());
-        if ((epic.getStartTime() == null || (epic.getStartTime() != null
-                && epic.getStartTime().isAfter(subtask.getStartTime()))) && subtask.getStartTime() != null) {
-            epic.updateStartTime(subtask.getStartTime());
+        if (subtask.getStartTime() == null || checkTaskOverlap(subtask)) {
+            Integer subtaskId = generateId();
+            subtask.setId(subtaskId);
+            subtasks.put(subtask.getId(), subtask);
+            Epic epic = epics.get(subtask.getEpicId());
+            if (epic == null) updateEpicStatus(epic);
+            epic.addSubtask(subtask.getId());
+            if ((epic.getStartTime() == null || (epic.getStartTime() != null
+                    && epic.getStartTime().isAfter(subtask.getStartTime()))) && subtask.getStartTime() != null) {
+                epic.updateStartTime(subtask.getStartTime());
+            }
+            if (subtask.getDuration() != null) epic.addDuration(subtask.getDuration());
+            if (subtask.getStartTime() != null) sortedTasks.add((Task) subtask);
         }
-        if (subtask.getDuration() != null) epic.addDuration(subtask.getDuration());
-        if (subtask.getStartTime() != null) sortedTasks.add((Task) subtask);
         return subtask;
     }
 
     @Override
     public void updateSubtask(Subtask subtask) {
         Subtask targetSubtask = subtasks.get(subtask.getId());
-        if (targetSubtask != null) {
+        if (targetSubtask != null && (subtask.getStartTime() == null || checkTaskOverlap(subtask))) {
             targetSubtask.setName(subtask.getName());
             targetSubtask.setDetails(subtask.getDetails());
             targetSubtask.setStatus(subtask.getStatus());
@@ -247,7 +266,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public TreeSet<Task> getPrioritizedTasks() {
-        System.out.println(sortedTasks);
         return sortedTasks;
     }
 }
