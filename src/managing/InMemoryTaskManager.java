@@ -164,6 +164,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteEpicSubtasks(Epic epic) {
         for (Integer id : epic.getSubtasks()) {
             history.remove(id);
+            if (subtasks.get(id).getStartTime() != null) sortedTasks.remove(subtasks.get(id));
             subtasks.remove(id);
         }
         epic.clearAllSubs();
@@ -181,6 +182,7 @@ public class InMemoryTaskManager implements TaskManager {
         if ((epic.getStartTime() == null || (epic.getStartTime() != null
                 && epic.getStartTime().isAfter(subtask.getStartTime()))) && subtask.getStartTime() != null) {
             epic.updateStartTime(subtask.getStartTime());
+            sortedTasks.add(subtask);
         }
         if (subtask.getDuration() != null) epic.addDuration(subtask.getDuration());
         return subtask;
@@ -206,6 +208,7 @@ public class InMemoryTaskManager implements TaskManager {
                 epic.updateStartTime(subtask.getStartTime());
             }
         }
+        if (subtask.getStartTime() != null) sortedTasks.add(subtask);
     }
 
     @Override
@@ -215,6 +218,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (subtask.getDuration() != null) epic.decreaseDuration(subtask.getDuration());
         updateEpicStatus(epic);
         history.remove(subtask.getId());
+        if (subtask.getStartTime() != null) sortedTasks.remove(subtask);
         subtasks.remove(subtask.getId());
     }
 
@@ -227,6 +231,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteAllSubtasks() {
         for (Integer subtask : subtasks.keySet()) {
             history.remove(subtask);
+            if (subtasks.get(subtask).getStartTime() != null) sortedTasks.add(subtasks.get(subtask));
         }
         subtasks.clear();
         for (Epic epic : epics.values()) {
