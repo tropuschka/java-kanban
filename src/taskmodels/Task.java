@@ -97,6 +97,14 @@ public class Task {
         return duration.toString();
     }
 
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
     public String toFile() {
         //id,type,name,status,description,start date,end date,epic
         String line;

@@ -5,9 +5,12 @@ import taskmodels.Subtask;
 import taskmodels.Task;
 import taskmodels.TaskStatus;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.TreeSet;
 
 public class InMemoryTaskManager implements TaskManager {
     private int taskAmount = 0;
@@ -16,6 +19,12 @@ public class InMemoryTaskManager implements TaskManager {
     protected HashMap<Integer, Subtask> subtasks = new HashMap<>();
     private final HistoryManager history = Managers.createHistoryManager();
     protected DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+    private Comparator comparator = new Comparator<Task>() {
+        public int compare(Task task1, Task task2) {
+            return task1.getStartTime().getNano() - task2.getStartTime().getNano();
+        }
+    };
+    private TreeSet<Task> sortedTasks = new TreeSet<>(comparator);
 
     private int generateId() {
         return ++taskAmount;
@@ -43,6 +52,7 @@ public class InMemoryTaskManager implements TaskManager {
         Integer taskId = generateId();
         task.setId(taskId);
         commonTasks.put(task.getId(), task);
+        if (task.getStartTime() != null) sortedTasks.add(task);
         return task;
     }
 
@@ -53,12 +63,17 @@ public class InMemoryTaskManager implements TaskManager {
             targetTask.setName(task.getName());
             targetTask.setDetails(task.getDetails());
             targetTask.setStatus(task.getStatus());
+            targetTask.setDuration(task.getDuration());
+            targetTask.setStartTime(task.getStartTime());
+            if (task.getStartTime() != null) sortedTasks.add(task);
         }
     }
 
     @Override
     public Task deleteTask(Integer id) {
         history.remove(id);
+        Task task = commonTasks.get(id);
+        if (task.getStartTime() != null) sortedTasks.remove(task);
         return commonTasks.remove(id);
     }
 
@@ -71,6 +86,8 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteAllTasks() {
         for (Integer task : commonTasks.keySet()) {
             history.remove(task);
+            Task taskItself = commonTasks.get(task);
+            if (taskItself.getStartTime() != null) sortedTasks.remove(taskItself);
         }
         commonTasks.clear();
     }
