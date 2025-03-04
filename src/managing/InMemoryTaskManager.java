@@ -5,10 +5,8 @@ import taskmodels.Subtask;
 import taskmodels.Task;
 import taskmodels.TaskStatus;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.io.Serializable;
 
 public class InMemoryTaskManager implements TaskManager {
     private int taskAmount = 0;
