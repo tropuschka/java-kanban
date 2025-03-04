@@ -246,4 +246,10 @@ public class InMemoryTaskManager implements TaskManager {
     public ArrayList<Task> getHistory() {
         return history.getHistory();
     }
+
+    @Override
+    public TreeSet<Task> getPrioritizedTasks() {
+        System.out.println(sortedTasks);
+        return sortedTasks;
+    }
 }
