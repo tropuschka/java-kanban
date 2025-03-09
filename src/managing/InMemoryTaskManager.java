@@ -13,7 +13,15 @@ public class InMemoryTaskManager implements TaskManager {
     protected HashMap<Integer, Epic> epics = new HashMap<>();
     protected HashMap<Integer, Subtask> subtasks = new HashMap<>();
     private final HistoryManager history = Managers.createHistoryManager();
-    private TreeSet<Task> sortedTasks = new TreeSet<>();
+    Comparator<Task> comparator = new Comparator<Task>() {
+        @Override
+        public int compare(Task o1, Task o2) {
+            if (o1.getStartTime().isBefore(o2.getStartTime())) return -1;
+            else if (o1.getStartTime().isAfter(o2.getStartTime())) return 1;
+            else return 0;
+        }
+    };
+    private TreeSet<Task> sortedTasks = new TreeSet<>(comparator);
 
     private int generateId() {
         return ++taskAmount;
@@ -39,15 +47,8 @@ public class InMemoryTaskManager implements TaskManager {
     private boolean checkTaskOverlap(Task task) {
         List<Task> tasks = new ArrayList<>(sortedTasks);
         boolean overlap = tasks.stream()
-                .noneMatch(checkTask -> ((checkTask.getStartTime().isBefore(task.getStartTime())
-                        && checkTask.getEndTime().isAfter(task.getStartTime()))
-                        || (task.getStartTime().isBefore(checkTask.getStartTime())
-                        && task.getEndTime().isAfter(checkTask.getStartTime()))
-                        || (checkTask.getStartTime().isBefore(task.getStartTime())
-                        && checkTask.getEndTime().isAfter(task.getEndTime()))
-                        || (task.getStartTime().isBefore(checkTask.getStartTime())
-                        && task.getEndTime().isAfter(checkTask.getEndTime()))
-                        || checkTask.compareTo(task) == 0));
+                .noneMatch(checkTask -> task.getStartTime().isBefore(checkTask.getEndTime())
+                        && task.getEndTime().isAfter(checkTask.getStartTime()));
         return overlap;
     }
 

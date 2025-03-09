@@ -235,13 +235,12 @@ class InMemoryTaskManagerTest {
 
     @Test
     void sortTasks() {
-        TreeSet<Task> sortedTasks = new TreeSet<>();
+        ArrayList<Task> sortedTasks = new ArrayList<>();
         sortedTasks.add(taskWithDeadline);
+        sortedTasks.add(subtask1WithDeadline);
         sortedTasks.add(subtask3WithDeadline);
         sortedTasks.add(subtask2WithDeadline);
-        sortedTasks.add(subtask1WithDeadline);
-        ArrayList<Task> sortedList = new ArrayList<>(sortedTasks);
-        assertEquals(sortedList, taskManager.getPrioritizedTasks());
+        assertEquals(sortedTasks, taskManager.getPrioritizedTasks());
     }
 
     @Test
