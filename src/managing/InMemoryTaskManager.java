@@ -5,6 +5,7 @@ import taskmodels.Subtask;
 import taskmodels.Task;
 import taskmodels.TaskStatus;
 
+import java.time.Duration;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -67,12 +68,11 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateTask(Task task) {
         Task targetTask = commonTasks.get(task.getId());
         if (targetTask != null && (task.getStartTime() == null || checkTaskOverlap(task))) {
-            targetTask.setName(task.getName());
-            targetTask.setDetails(task.getDetails());
-            targetTask.setStatus(task.getStatus());
-            targetTask.setDuration(task.getDuration());
-            targetTask.setStartTime(task.getStartTime());
-            if (task.getStartTime() != null) sortedTasks.add(task);
+            commonTasks.put(targetTask.getId(), task);
+            if (task.getStartTime() != null) {
+                sortedTasks.remove(targetTask);
+                sortedTasks.add(task);
+            }
         }
     }
 
@@ -118,10 +118,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateEpic(Epic epic) {
         Epic targetEpic = epics.get(epic.getId());
         if (targetEpic != null) {
-            targetEpic.setName(epic.getName());
-            targetEpic.setDetails(epic.getDetails());
-            targetEpic.setDuration(epic.getDuration());
-            targetEpic.setStartTime(epic.getStartTime());
+            epics.put(targetEpic.getId(), epic);
         }
     }
 
@@ -201,22 +198,31 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateSubtask(Subtask subtask) {
         Subtask targetSubtask = subtasks.get(subtask.getId());
         if (targetSubtask != null && (subtask.getStartTime() == null || checkTaskOverlap(subtask))) {
-            targetSubtask.setName(subtask.getName());
-            targetSubtask.setDetails(subtask.getDetails());
-            targetSubtask.setStatus(subtask.getStatus());
+            subtasks.remove(targetSubtask.getId());
+            subtasks.put(targetSubtask.getId(), subtask);
         }
         Epic epic = epics.get(subtask.getEpicId());
         if (epic != null) {
-            updateEpicStatus(epic);
-            if (subtask.getDuration() != null) {
-                epic.decreaseDuration(targetSubtask.getDuration());
-                epic.addDuration(subtask.getDuration());
+            Epic newEpic = new Epic(epic.getId(), epic.getName(), epic.getDetails());
+            for (Integer subtaskID : epic.getSubtasks()) {
+                newEpic.addSubtask(subtaskID);
             }
-            if ((epic.getStartTime() == null || (epic.getStartTime() != null
-                    && epic.getStartTime().isAfter(subtask.getStartTime()))) && subtask.getStartTime() != null) {
-                epic.updateStartTime(subtask.getStartTime());
+            updateEpicStatus(newEpic);
+            if (subtask.getDuration() != null) {
+                Duration newDuration = epic.getDuration().plus(subtask.getDuration());
+                newEpic.setDuration(newDuration);
+            }
+            if (subtask.getDuration() != null) {
+                if ((epic.getStartTime() == null || (epic.getStartTime() != null
+                        && epic.getStartTime().isAfter(subtask.getStartTime())))) {
+                    newEpic.setStartTime(subtask.getStartTime());
+                } else {
+                    newEpic.setStartTime(epic.getStartTime());
+                }
+                sortedTasks.remove(targetSubtask);
                 sortedTasks.add(subtask);
             }
+            updateEpic(newEpic);
         }
     }
 

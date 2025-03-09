@@ -230,7 +230,7 @@ class InMemoryTaskManagerTest {
     void epicUpdate() {
         Epic newEpic = new Epic(2, "Epic", "New task description");
         taskManager.updateEpic(newEpic);
-        assertNotEquals(new Epic(2, "Epic", "New task description"), taskManager.findEpicById(2));
+        assertEquals(new Epic(2, "Epic", "New task description"), taskManager.findEpicById(2));
     }
 
     @Test
