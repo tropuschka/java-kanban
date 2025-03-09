@@ -1,6 +1,5 @@
 package managing;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import taskmodels.Epic;
@@ -8,10 +7,7 @@ import taskmodels.Subtask;
 import taskmodels.Task;
 import taskmodels.TaskStatus;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.TreeSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
