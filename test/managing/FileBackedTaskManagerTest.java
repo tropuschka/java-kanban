@@ -12,12 +12,12 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FileBackedTaskManagerTest {
+public class FileBackedTaskManagerTest extends InMemoryTaskManagerTest {
     TaskManager fileBackedTM;
     File file;
 
     @BeforeEach
-    void createManager() throws IOException {
+    void createFileBackedManager() throws IOException {
         Task task = new Task(1, "Task", "Some task");
         Epic epic = new Epic(2, "Task", "Some task");
         Subtask subtask = new Subtask(3, "Task", "Some task", 2);
