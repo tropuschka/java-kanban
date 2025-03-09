@@ -1,9 +1,6 @@
 package managing;
 
-import taskmodels.Epic;
-import taskmodels.Subtask;
-import taskmodels.Task;
-import taskmodels.TaskStatus;
+import taskmodels.*;
 
 import java.time.Duration;
 import java.util.*;
@@ -126,10 +123,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteEpic(Integer id) {
         Epic epic = epics.get(id);
         history.remove(epic.getId());
-        for (Integer subtask : epic.getSubtasks()) {
-            history.remove(subtask);
-            subtasks.remove(subtask);
-        }
+        deleteEpicSubtasks(epic);
         epics.remove(id);
     }
 
@@ -143,6 +137,7 @@ public class InMemoryTaskManager implements TaskManager {
         for (Integer epic : epics.keySet()) {
             history.remove(epic);
         }
+        sortedTasks.removeIf(task -> task.getType().equals(TaskType.SUBTASK));
         subtasks.clear();
         epics.clear();
     }
@@ -167,8 +162,8 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteEpicSubtasks(Epic epic) {
         for (Integer id : epic.getSubtasks()) {
-            history.remove(id);
             if (subtasks.get(id).getStartTime() != null) sortedTasks.remove(subtasks.get(id));
+            history.remove(id);
             subtasks.remove(id);
         }
         epic.clearAllSubs();
