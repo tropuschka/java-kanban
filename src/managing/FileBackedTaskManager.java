@@ -55,6 +55,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                         epic.addSubtask(task.getId());
                         if (task.getDuration() != null) epic.addDuration(task.getDuration());
                     } else fileBackedTM.commonTasks.put(task.getId(), task);
+                    if ((task.getType().equals(TaskType.SUBTASK) || task.getType().equals(TaskType.TASK))
+                        && task.getStartTime() != null) fileBackedTM.sortedTasks.add(task);
                 }
             }
         } catch (IOException e) {

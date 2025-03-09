@@ -19,7 +19,7 @@ public class InMemoryTaskManager implements TaskManager {
             else return 0;
         }
     };
-    private TreeSet<Task> sortedTasks = new TreeSet<>(comparator);
+    protected TreeSet<Task> sortedTasks = new TreeSet<>(comparator);
 
     private int generateId() {
         return ++taskAmount;
