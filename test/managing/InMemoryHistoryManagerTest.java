@@ -10,9 +10,8 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class InMemoryHistoryManagerTest extends ManagersTest {
+class InMemoryHistoryManagerTest {
     static InMemoryHistoryManager manager;
-    static Task task;
 
     @BeforeEach
     void historyManagerRefill() {
