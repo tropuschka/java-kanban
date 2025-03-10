@@ -11,15 +11,7 @@ public class InMemoryTaskManager implements TaskManager {
     protected HashMap<Integer, Epic> epics = new HashMap<>();
     protected HashMap<Integer, Subtask> subtasks = new HashMap<>();
     private final HistoryManager history = Managers.createHistoryManager();
-    Comparator<Task> comparator = new Comparator<Task>() {
-        @Override
-        public int compare(Task o1, Task o2) {
-            if (o1.getStartTime().isBefore(o2.getStartTime())) return -1;
-            else if (o1.getStartTime().isAfter(o2.getStartTime())) return 1;
-            else return 0;
-        }
-    };
-    protected TreeSet<Task> sortedTasks = new TreeSet<>(comparator);
+    protected TreeSet<Task> sortedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
 
     private int generateId() {
         return ++taskAmount;
