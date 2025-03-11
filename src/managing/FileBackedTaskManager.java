@@ -19,7 +19,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public void save() {
         try (FileWriter fw = new FileWriter(file, StandardCharsets.UTF_8)) {
-            fw.write("id,type,name,status,description,epic\n");
+            fw.write("id,type,name,status,description,start date,end date,epic\n");
             for (Task task : super.getAllTasks()) {
                 String taskString = task.toFile();
                 fw.write(taskString + "\n");
@@ -29,8 +29,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 fw.write(epicString + "\n");
             }
             for (Subtask subtask : super.getAllSubtasks()) {
-                String epicString = subtask.toFile();
-                fw.write(epicString + "\n");
+                String subtaskString = subtask.toFile();
+                fw.write(subtaskString + "\n");
             }
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка записи файла");
@@ -53,7 +53,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                         fileBackedTM.subtasks.put(task.getId(), (Subtask) task);
                         Epic epic = fileBackedTM.epics.get(((Subtask) task).getEpicId());
                         epic.addSubtask(task.getId());
+                        if (task.getDuration() != null) epic.addDuration(task.getDuration());
                     } else fileBackedTM.commonTasks.put(task.getId(), task);
+                    if ((task.getType().equals(TaskType.SUBTASK) || task.getType().equals(TaskType.TASK))
+                        && task.getStartTime() != null) fileBackedTM.sortedTasks.add(task);
                 }
             }
         } catch (IOException e) {

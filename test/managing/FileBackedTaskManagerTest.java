@@ -12,28 +12,22 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FileBackedTaskManagerTest {
-    TaskManager fileBackedTM;
+public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     File file;
 
     @BeforeEach
-    void createManager() throws IOException {
-        Task task = new Task(1, "Task", "Some task");
-        Epic epic = new Epic(1, "Task", "Some task");
-        Subtask subtask = new Subtask(1, "Task", "Some task", 1);
+    void createFileBackedManager() throws IOException {
         file = File.createTempFile("tasks", ".txt");
-        fileBackedTM =  FileBackedTaskManager.loadFromFile(file);
-        fileBackedTM.createTask(task);
-        fileBackedTM.createEpic(epic);
-        fileBackedTM.createSubtask(subtask);
+        taskManager = new FileBackedTaskManager(file);
+        initTasks();
     }
 
     @Test
     void downloadTMFromFile() {
         FileBackedTaskManager taskManagerFromFile = FileBackedTaskManager.loadFromFile(file);
-        assertTrue(fileBackedTM.getAllTasks().equals(taskManagerFromFile.getAllTasks()) &&
-                fileBackedTM.getAllEpic().equals(taskManagerFromFile.getAllEpic()) &&
-                fileBackedTM.getAllSubtasks().equals(taskManagerFromFile.getAllSubtasks()));
+        assertTrue(taskManager.getAllTasks().equals(taskManagerFromFile.getAllTasks()) &&
+                taskManager.getAllEpic().equals(taskManagerFromFile.getAllEpic()) &&
+                taskManager.getAllSubtasks().equals(taskManagerFromFile.getAllSubtasks()));
     }
 
     @AfterEach

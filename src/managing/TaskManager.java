@@ -48,4 +48,6 @@ public interface TaskManager {
     ArrayList<Task> getHistory();
 
     void deleteEpicSubtasks(Epic epic);
+
+    ArrayList<Task> getPrioritizedTasks();
 }

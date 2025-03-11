@@ -10,6 +10,11 @@ public class Subtask extends Task {
         this.epicId = epicId;
     }
 
+    public Subtask(Integer id, String name, String details, Integer epicId, String startTime, String duration) {
+        super(id, name, details, startTime, duration);
+        this.epicId = epicId;
+    }
+
     public Integer getEpicId() {
         return epicId;
     }
@@ -32,8 +37,14 @@ public class Subtask extends Task {
 
     @Override
     public String toFile() {
-        //id,type,name,status,description,epic
-        return getId() + "," + getType() + "," + getName() + "," + getStatus() + "," + getDetails() + "," + getEpicId();
+        //id,type,name,status,description,start date,end date,epic
+        String line;
+        if (startTime != null) line = getId() + "," + getType() + "," + getName() + "," + getStatus() + ","
+                + getDetails() + "," + getStartTime().format(formatter) + "," + getEndTime().format(formatter) + ","
+                + getEpicId();
+        else line = getId() + "," + getType() + "," + getName() + "," + getStatus() + "," + getDetails() + ",-,-"
+                + "," + getEpicId();
+        return line;
     }
 
     @Override
