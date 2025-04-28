@@ -19,4 +19,13 @@ public class BaseHttpHandler implements HttpHandler {
         exchange.getResponseBody().write(response);
         exchange.close();
     }
+
+    protected void sendNotFound(HttpExchange exchange) throws IOException {
+        String text = "Задача не найдена.";
+        byte[] response = text.getBytes(StandardCharsets.UTF_8);
+        exchange.getRequestHeaders().add("Content-Type", "application/json;charset=utf-8");
+        exchange.sendResponseHeaders(404, response.length);
+        exchange.getResponseBody().write(response);
+        exchange.close();
+    }
 }
