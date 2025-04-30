@@ -23,7 +23,7 @@ public class TaskHttpHandler extends BaseHttpHandler {
             case "DELETE":
                 response = "delete";
             default:
-                sendNotFound(exchange, "Некорректный запрос.");
+                sendNotFound(exchange, "Not Found");
         }
     }
 }
