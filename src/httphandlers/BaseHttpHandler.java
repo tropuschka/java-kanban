@@ -8,9 +8,11 @@ import managing.TaskManager;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.format.DateTimeFormatter;
 
 public class BaseHttpHandler implements HttpHandler {
     protected TaskManager manager;
+    protected DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     public BaseHttpHandler (TaskManager manager) {
         super();
