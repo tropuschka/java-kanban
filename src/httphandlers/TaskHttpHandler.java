@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class TaskHttpHandler extends BaseHttpHandler {
     public TaskHttpHandler(TaskManager manager) {
@@ -37,14 +38,20 @@ public class TaskHttpHandler extends BaseHttpHandler {
 
         switch (method) {
             case "POST":
-                if (bodyArray[1].equals("task") && bodyArray.length == 2) { // Обработать параметры
+                if (bodyArray[1].equals("task") && bodyArray.length == 2) {
                     task = newTask(jElem);
                     manager.createTask(task);
+                    if (manager.findTaskById(task.getId()) == null) sendHasInteractions(exchange, "Not Acceptable");
                     sendText(exchange, "Task \"" + task.getName() + "\" created");
                 } else if (bodyArray[1].equals("task") && bodyArray.length == 3 && isNumber(bodyArray[2])) {
                     int taskId = Integer.parseInt(bodyArray[2]);
                     task = newTask(jElem, taskId);
+                    Task oldTask = manager.findTaskById(taskId);
+                    if (oldTask == null) sendNotFound(exchange, "Not Found");
                     manager.updateTask(task);
+                    if (Objects.equals(oldTask, manager.findTaskById(taskId)) || manager.findTaskById(taskId) == null) {
+                        sendHasInteractions(exchange, "Not Acceptable");
+                    }
                     sendText(exchange, "Task \"" + task.getName() + "\" updated");
                 } else sendNotFound(exchange, "Not Found");
             case "GET":
