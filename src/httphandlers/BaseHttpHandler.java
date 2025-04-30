@@ -45,4 +45,16 @@ public class BaseHttpHandler implements HttpHandler {
         exchange.getResponseBody().write(response);
         exchange.close();
     }
+
+    protected boolean isNumber(String string) {
+        if (string == null) return false;
+        else {
+            try {
+                Integer.parseInt(string);
+                return true;
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        }
+    }
 }
