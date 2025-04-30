@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 public class BaseHttpHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
+
     }
 
     protected void sendText(HttpExchange exchange, String text) throws IOException {
