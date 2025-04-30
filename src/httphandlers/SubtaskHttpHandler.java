@@ -1,12 +1,18 @@
 package httphandlers;
 
 import com.sun.net.httpserver.HttpExchange;
+import managing.Managers;
+import managing.TaskManager;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class SubtaskHttpHandler  extends BaseHttpHandler {
+    public SubtaskHttpHandler(TaskManager manager) {
+        super(manager);
+    }
+
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         InputStream input = exchange.getRequestBody();

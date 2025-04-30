@@ -2,12 +2,21 @@ package httphandlers;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import managing.Managers;
+import managing.TaskManager;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 public class BaseHttpHandler implements HttpHandler {
+    protected TaskManager manager;
+
+    public BaseHttpHandler (TaskManager manager) {
+        super();
+        this.manager = manager;
+    }
+
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
 
