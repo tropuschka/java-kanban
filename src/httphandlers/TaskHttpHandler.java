@@ -30,18 +30,6 @@ public class TaskHttpHandler extends BaseHttpHandler {
 
         Gson gson = new Gson();
         JsonElement jElem = JsonParser.parseString(body);
-        JsonObject jObj = jElem.getAsJsonObject(); // Переместить в отдельный метод?
-        String taskName = jObj.get("name").getAsString();
-        String taskDescription = jObj.get("description").getAsString();
-        String dateString = jObj.get("start-date").getAsString();
-        String durationString = null;
-        if (dateString != null) {
-            LocalDateTime taskStartDate = LocalDateTime.parse(dateString, formatter);
-            String endDateString = jObj.get("end-date").getAsString();
-            LocalDateTime taskEndDate = LocalDateTime.parse(endDateString, formatter);
-            Duration taskDuration = Duration.between(taskStartDate, taskEndDate);
-            durationString = taskDuration.toString();
-        }
 
         int indexQuestion = body.indexOf("?");
         body = body.substring(0, indexQuestion);
@@ -50,16 +38,14 @@ public class TaskHttpHandler extends BaseHttpHandler {
         switch (method) {
             case "POST":
                 if (bodyArray[1].equals("task") && bodyArray.length == 2) { // Обработать параметры
-                    if (dateString != null) task = new Task(0, taskName, taskDescription, dateString, durationString);
-                    else task = new Task(0, taskName, taskDescription);
+                    task = newTask(jElem);
                     manager.createTask(task);
-                    sendText(exchange, "Task \"" + taskName + "\" created");
+                    sendText(exchange, "Task \"" + task.getName() + "\" created");
                 } else if (bodyArray[1].equals("task") && bodyArray.length == 3 && isNumber(bodyArray[2])) {
                     int taskId = Integer.parseInt(bodyArray[2]);
-                    if (dateString != null) task = new Task(taskId, taskName, taskDescription, dateString, durationString);
-                    else task = new Task(taskId, taskName, taskDescription);
+                    task = newTask(jElem, taskId);
                     manager.updateTask(task);
-                    sendText(exchange, "Task \"" + taskName + "\" updated");
+                    sendText(exchange, "Task \"" + task.getName() + "\" updated");
                 } else sendNotFound(exchange, "Not Found");
             case "GET":
                 if (bodyArray[1].equals("task") && bodyArray.length == 2) { // Обработать параметры
