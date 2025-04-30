@@ -32,7 +32,7 @@ public class BaseHttpHandler implements HttpHandler {
     protected void sendHasInteractions(HttpExchange exchange, String text) throws IOException {
         byte[] response = text.getBytes(StandardCharsets.UTF_8);
         exchange.getRequestHeaders().add("Content-Type", "application/json;charset=utf-8");
-        exchange.sendResponseHeaders(400, response.length);
+        exchange.sendResponseHeaders(406, response.length);
         exchange.getResponseBody().write(response);
         exchange.close();
     }

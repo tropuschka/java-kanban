@@ -14,6 +14,16 @@ public class TaskHttpHandler extends BaseHttpHandler {
         String body = new String(input.readAllBytes(), StandardCharsets.UTF_8);
         String[] bodyArray = body.split("/");
 
-        //Здесь будет собственно обработка запросов
+        String response;
+        switch (method) {
+            case "POST":
+                response = "post";
+            case "GET":
+                response = "get";
+            case "DELETE":
+                response = "delete";
+            default:
+                response = "unknown";
+        }
     }
 }
