@@ -11,11 +11,13 @@ import taskmodels.Task;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class TaskHttpHandler extends BaseHttpHandler {
     public TaskHttpHandler(TaskManager manager) {
@@ -55,16 +57,19 @@ public class TaskHttpHandler extends BaseHttpHandler {
                     sendText(exchange, "Task \"" + task.getName() + "\" updated");
                 } else sendNotFound(exchange, "Not Found");
             case "GET":
-                if (bodyArray[1].equals("task") && bodyArray.length == 2) { // Обработать параметры
+                if (bodyArray[1].equals("task") && bodyArray.length == 2) {
                     ArrayList<Task> allTasksArray = manager.getAllTasks();
-                    sendText(exchange, "All tasks");
+                    String response = allTasksArray.stream().map(Task::toString).collect(Collectors.joining("\n"));
+                    sendText(exchange, response);
                 } else if (bodyArray[1].equals("task") && bodyArray.length == 3 && isNumber(bodyArray[2])) {
                     int taskId = Integer.parseInt(bodyArray[2]);
-                    manager.findTaskById(taskId);
-                    sendText(exchange, "Task");
+                    task = manager.findTaskById(taskId);
+                    if (task == null) sendNotFound(exchange, "Not found");
+                    String response = task.toString();
+                    sendText(exchange, response);
                 } else sendNotFound(exchange, "Not Found");
             case "DELETE":
-                if (bodyArray[1].equals("task") && bodyArray.length == 2) { // Обработать параметры
+                if (bodyArray[1].equals("task") && bodyArray.length == 2) {
                     manager.deleteAllTasks();
                     if (manager.getAllTasks() != null) sendHasInteractions(exchange, "Not Acceptable");
                     sendText(exchange, "All tasks deleted");
