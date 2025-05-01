@@ -66,11 +66,15 @@ public class TaskHttpHandler extends BaseHttpHandler {
             case "DELETE":
                 if (bodyArray[1].equals("task") && bodyArray.length == 2) { // Обработать параметры
                     manager.deleteAllTasks();
+                    if (manager.getAllTasks() != null) sendHasInteractions(exchange, "Not Acceptable");
                     sendText(exchange, "All tasks deleted");
                 } else if (bodyArray[1].equals("task") && bodyArray.length == 3 && isNumber(bodyArray[2])) {
                     int taskId = Integer.parseInt(bodyArray[2]);
+                    if (manager.findTaskById(taskId) == null) sendNotFound(exchange, "Not Found");
+                    String taskName = manager.findTaskById(taskId).getName();
                     manager.deleteTask(taskId);
-                    sendText(exchange, "Task \"Name\" deleted");
+                    if (manager.findTaskById(taskId) != null) sendHasInteractions(exchange, "Not Acceptable");
+                    sendText(exchange, "Task \"" + taskName + "\" deleted");
                 } else sendNotFound(exchange, "Not Found");
             default:
                 sendNotFound(exchange, "Not Found");

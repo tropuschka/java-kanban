@@ -30,7 +30,7 @@ public class BaseHttpHandler implements HttpHandler {
 
     }
 
-    protected void sendText(HttpExchange exchange, String text) throws IOException {
+    protected void sendText(HttpExchange exchange, String text) throws IOException { // Коды должны быть разными
         byte[] response = text.getBytes(StandardCharsets.UTF_8);
         exchange.getRequestHeaders().add("Content-Type", "application/json;charset=utf-8");
         exchange.sendResponseHeaders(200, response.length);
