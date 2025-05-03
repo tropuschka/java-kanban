@@ -2,10 +2,13 @@ package httphandlers;
 
 import com.sun.net.httpserver.HttpExchange;
 import managing.TaskManager;
+import taskmodels.Task;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class PriorityHttpHandler  extends BaseHttpHandler {
     public PriorityHttpHandler(TaskManager manager) {
@@ -14,19 +17,14 @@ public class PriorityHttpHandler  extends BaseHttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        InputStream input = exchange.getRequestBody();
         String method = exchange.getRequestMethod();
-        String body = new String(input.readAllBytes(), StandardCharsets.UTF_8);
-        String[] bodyArray = body.split("/");
 
-        String response;
         switch (method) {
-            case "POST":
-                response = "post";
             case "GET":
-                response = "get";
-            case "DELETE":
-                response = "delete";
+                ArrayList<Task> allTasksArray = manager.getPrioritizedTasks();
+                if (allTasksArray.isEmpty()) sendNotFound(exchange, "Not Found");
+                String response = allTasksArray.stream().map(Task::toString).collect(Collectors.joining("\n"));
+                sendText(exchange, response);
             default:
                 sendNotFound(exchange, "Not Found");
         }
