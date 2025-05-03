@@ -3,10 +3,8 @@ import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpExchange;
-import httphandlers.BaseHttpHandler;
-import httphandlers.EpicHttpHandler;
-import httphandlers.SubtaskHttpHandler;
-import httphandlers.TaskHttpHandler;
+import httphandlers.*;
+import managing.HistoryManager;
 import managing.Managers;
 import managing.TaskManager;
 
@@ -28,6 +26,7 @@ public class HttpTaskServer {
         server.createContext("/task", new TaskHttpHandler(manager));
         server.createContext("/epic", new EpicHttpHandler(manager));
         server.createContext("/subtask", new SubtaskHttpHandler(manager));
+        server.createContext("/history", new HistoryHttpHandler(manager));
         server.start();
     }
 

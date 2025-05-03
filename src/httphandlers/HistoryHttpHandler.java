@@ -1,11 +1,17 @@
 package httphandlers;
 
 import com.sun.net.httpserver.HttpExchange;
+import managing.HistoryManager;
 import managing.TaskManager;
+import taskmodels.Task;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class HistoryHttpHandler  extends BaseHttpHandler {
     public HistoryHttpHandler(TaskManager manager) {
@@ -14,19 +20,14 @@ public class HistoryHttpHandler  extends BaseHttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        InputStream input = exchange.getRequestBody();
         String method = exchange.getRequestMethod();
-        String body = new String(input.readAllBytes(), StandardCharsets.UTF_8);
-        String[] bodyArray = body.split("/");
 
-        String response;
         switch (method) {
-            case "POST":
-                response = "post";
             case "GET":
-                response = "get";
-            case "DELETE":
-                response = "delete";
+                    ArrayList<Task> allTasksArray = manager.getHistory();
+                    if (allTasksArray.isEmpty()) sendText(exchange, "History is empty");
+                    String response = allTasksArray.stream().map(Task::toString).collect(Collectors.joining("\n"));
+                    sendText(exchange, response);
             default:
                 sendNotFound(exchange, "Not Found");
         }
