@@ -8,6 +8,8 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import managing.Managers;
 import managing.TaskManager;
+import taskmodels.Epic;
+import taskmodels.Subtask;
 import taskmodels.Task;
 
 import java.io.IOException;
@@ -81,12 +83,13 @@ public class BaseHttpHandler implements HttpHandler {
         }
     }
 
-    protected Task newTask(String parameterString) { // Переместить в отдельный метод?
+    protected Task newTask(String parameterString, String type) { // Переместить в отдельный метод?
         String taskName = "New name";
         String taskDescription = "New description";
         String dateString = null;
         String durationString = null;
         String endDateString = null;
+        int epicId = -1;
         if (parameterString != null) {
             String[] taskParams = parameterString.split("&");
             for (String item : taskParams) {
@@ -106,6 +109,9 @@ public class BaseHttpHandler implements HttpHandler {
                     case "end-date":
                         endDateString = value;
                         break;
+                    case "epic-id":
+                        if (isNumber(value)) epicId = Integer.parseInt(value);
+                        break;
                 }
             }
         }
@@ -115,16 +121,25 @@ public class BaseHttpHandler implements HttpHandler {
             Duration taskDuration = Duration.between(taskStartDate, taskEndDate);
             durationString = taskDuration.toString();
         }
-        if (dateString != null) return new Task(-1, taskName, taskDescription, dateString, durationString);
-        else return new Task(-1, taskName, taskDescription);
+
+        switch (type) {
+            case "epic": return new Epic(-1, taskName, taskDescription);
+            case "subtask":
+                if (dateString != null) return new Subtask(-1, taskName, taskDescription, epicId, dateString, durationString);
+                else return new Subtask(-1, taskName, taskDescription, epicId);
+            default:
+                if (dateString != null) return new Task(-1, taskName, taskDescription, dateString, durationString);
+                else return new Task(-1, taskName, taskDescription);
+        }
     }
 
-    protected Task newTask(String parameterString, int taskId) { // Переместить в отдельный метод?
+    protected Task newTask(String parameterString, String type, int taskId) { // Переместить в отдельный метод?
         String taskName = "New name";
         String taskDescription = "New description";
         String dateString = null;
         String durationString = null;
         String endDateString = null;
+        int epicId = -1;
         if (parameterString != null) {
             String[] taskParams = parameterString.split("&");
             for (String item : taskParams) {
@@ -144,6 +159,9 @@ public class BaseHttpHandler implements HttpHandler {
                     case "end-date":
                         endDateString = value;
                         break;
+                    case "epic-id":
+                        if (isNumber(value)) epicId = Integer.parseInt(value);
+                        break;
                 }
             }
         }
@@ -153,7 +171,15 @@ public class BaseHttpHandler implements HttpHandler {
             Duration taskDuration = Duration.between(taskStartDate, taskEndDate);
             durationString = taskDuration.toString();
         }
-        if (dateString != null) return new Task(taskId, taskName, taskDescription, dateString, durationString);
-        else return new Task(taskId, taskName, taskDescription);
+
+        switch (type) {
+            case "epic": return new Epic(taskId, taskName, taskDescription);
+            case "subtask":
+                if (dateString != null) return new Subtask(taskId, taskName, taskDescription, epicId, dateString, durationString);
+                else return new Subtask(taskId, taskName, taskDescription, epicId);
+            default:
+                if (dateString != null) return new Task(taskId, taskName, taskDescription, dateString, durationString);
+                else return new Task(taskId, taskName, taskDescription);
+        }
     }
 }

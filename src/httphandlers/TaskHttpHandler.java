@@ -48,13 +48,13 @@ public class TaskHttpHandler extends BaseHttpHandler {
         switch (method) {
             case "POST":
                 if (requestArray[1].equals("task") && requestArray.length == 2) {
-                    task = newTask(parameterString);
+                    task = newTask(parameterString, "task");
                     manager.createTask(task);
                     if (manager.findTaskById(task.getId()) == null) sendHasInteractions(exchange, "Not Acceptable");
                     sendText(exchange, "Task \"" + task.getName() + "\" created");
                 } else if (requestArray[1].equals("task") && requestArray.length == 3 && isNumber(requestArray[2])) {
                     int taskId = Integer.parseInt(requestArray[2]);
-                    task = newTask(parameterString, taskId);
+                    task = newTask(parameterString, "task", taskId);
                     Task oldTask = manager.findTaskById(taskId);
                     if (oldTask == null) sendNotFound(exchange, "Not Found");
                     manager.updateTask(task);

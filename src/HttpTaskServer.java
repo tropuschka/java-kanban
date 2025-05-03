@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpExchange;
 import httphandlers.BaseHttpHandler;
+import httphandlers.EpicHttpHandler;
 import httphandlers.TaskHttpHandler;
 import managing.Managers;
 import managing.TaskManager;
@@ -24,6 +25,7 @@ public class HttpTaskServer {
         server.createContext("/", new BaseHttpHandler());
         server.createContext("/stop", new StopHandler());
         server.createContext("/task", new TaskHttpHandler(manager));
+        server.createContext("/epic", new EpicHttpHandler(manager));
         server.start();
     }
 
