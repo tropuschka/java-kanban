@@ -5,6 +5,7 @@ import taskmodels.Epic;
 import taskmodels.Subtask;
 import taskmodels.Task;
 
+import java.io.IOException;
 import java.net.URI;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,7 +14,7 @@ public class HttpTaskServerTest {
     private static HttpTaskServer httpServer;
 
     @BeforeAll
-    public static void startAndRunServer() {
+    public static void startAndRunServer() throws IOException {
         httpServer = new HttpTaskServer();
         httpServer.start();
     }
