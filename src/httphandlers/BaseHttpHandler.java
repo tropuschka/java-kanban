@@ -81,32 +81,74 @@ public class BaseHttpHandler implements HttpHandler {
         }
     }
 
-    protected Task newTask(JsonElement jElem) { // Переместить в отдельный метод?
-        JsonObject jObj = jElem.getAsJsonObject();
-        String taskName = jObj.get("name").getAsString();
-        String taskDescription = jObj.get("description").getAsString();
-        String dateString = jObj.get("start-date").getAsString();
+    protected Task newTask(String parameterString) { // Переместить в отдельный метод?
+        String taskName = "New name";
+        String taskDescription = "New description";
+        String dateString = null;
         String durationString = null;
-        if (dateString != null) {
+        String endDateString = null;
+        if (parameterString != null) {
+            String[] taskParams = parameterString.split("&");
+            for (String item : taskParams) {
+                int equalIndex = item.indexOf("=");
+                String param = item.substring(0, equalIndex);
+                String value = item.substring(equalIndex + 1);
+                switch (param) {
+                    case "name":
+                        taskName = value;
+                        break;
+                    case "description":
+                        taskDescription = value;
+                        break;
+                    case "start-date":
+                        dateString = value;
+                        break;
+                    case "end-date":
+                        endDateString = value;
+                        break;
+                }
+            }
+        }
+        if (dateString != null && endDateString != null) {
             LocalDateTime taskStartDate = LocalDateTime.parse(dateString, formatter);
-            String endDateString = jObj.get("end-date").getAsString();
             LocalDateTime taskEndDate = LocalDateTime.parse(endDateString, formatter);
             Duration taskDuration = Duration.between(taskStartDate, taskEndDate);
             durationString = taskDuration.toString();
         }
-        if (dateString != null) return new Task(0, taskName, taskDescription, dateString, durationString);
-        else return new Task(0, taskName, taskDescription);
+        if (dateString != null) return new Task(-1, taskName, taskDescription, dateString, durationString);
+        else return new Task(-1, taskName, taskDescription);
     }
 
-    protected Task newTask(JsonElement jElem, int taskId) { // Переместить в отдельный метод?
-        JsonObject jObj = jElem.getAsJsonObject();
-        String taskName = jObj.get("name").getAsString();
-        String taskDescription = jObj.get("description").getAsString();
-        String dateString = jObj.get("start-date").getAsString();
+    protected Task newTask(String parameterString, int taskId) { // Переместить в отдельный метод?
+        String taskName = "New name";
+        String taskDescription = "New description";
+        String dateString = null;
         String durationString = null;
-        if (dateString != null) {
+        String endDateString = null;
+        if (parameterString != null) {
+            String[] taskParams = parameterString.split("&");
+            for (String item : taskParams) {
+                int equalIndex = item.indexOf("=");
+                String param = item.substring(0, equalIndex);
+                String value = item.substring(equalIndex + 1);
+                switch (param) {
+                    case "name":
+                        taskName = value;
+                        break;
+                    case "description":
+                        taskDescription = value;
+                        break;
+                    case "start-date":
+                        dateString = value;
+                        break;
+                    case "end-date":
+                        endDateString = value;
+                        break;
+                }
+            }
+        }
+        if (dateString != null && endDateString != null) {
             LocalDateTime taskStartDate = LocalDateTime.parse(dateString, formatter);
-            String endDateString = jObj.get("end-date").getAsString();
             LocalDateTime taskEndDate = LocalDateTime.parse(endDateString, formatter);
             Duration taskDuration = Duration.between(taskStartDate, taskEndDate);
             durationString = taskDuration.toString();

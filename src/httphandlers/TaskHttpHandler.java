@@ -36,7 +36,11 @@ public class TaskHttpHandler extends BaseHttpHandler {
         String url = request.toString();
         int questionIndex = url.indexOf("?");
         String cutRequest;
-        if (questionIndex != -1) cutRequest = url.substring(0, questionIndex);
+        String parameterString = null;
+        if (questionIndex != -1) {
+            cutRequest = url.substring(0, questionIndex);
+            parameterString = url.substring(questionIndex + 1);
+        }
         else cutRequest = url;
         String[] requestArray = cutRequest.split("/");
         Task task;
@@ -44,13 +48,13 @@ public class TaskHttpHandler extends BaseHttpHandler {
         switch (method) {
             case "POST":
                 if (requestArray[1].equals("task") && requestArray.length == 2) {
-                    task = new Task(0, "Name", "descr");
+                    task = newTask(parameterString);
                     manager.createTask(task);
                     if (manager.findTaskById(task.getId()) == null) sendHasInteractions(exchange, "Not Acceptable");
                     sendText(exchange, "Task \"" + task.getName() + "\" created");
                 } else if (requestArray[1].equals("task") && requestArray.length == 3 && isNumber(requestArray[2])) {
                     int taskId = Integer.parseInt(requestArray[2]);
-                    task = new Task(taskId, "Name", "descr");
+                    task = newTask(parameterString, taskId);
                     Task oldTask = manager.findTaskById(taskId);
                     if (oldTask == null) sendNotFound(exchange, "Not Found");
                     manager.updateTask(task);
