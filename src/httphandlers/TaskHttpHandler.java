@@ -14,9 +14,6 @@ public class TaskHttpHandler extends BaseHttpHandler {
     public TaskHttpHandler(TaskManager manager) {
         super(manager);
     }
-    public TaskHttpHandler() {
-        super();
-    }
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
@@ -29,8 +26,7 @@ public class TaskHttpHandler extends BaseHttpHandler {
         if (questionIndex != -1) {
             cutRequest = url.substring(0, questionIndex);
             parameterString = url.substring(questionIndex + 1);
-        }
-        else cutRequest = url;
+        } else cutRequest = url;
         String[] requestArray = cutRequest.split("/");
         Task task;
 

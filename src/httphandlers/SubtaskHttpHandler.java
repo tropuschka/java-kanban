@@ -14,9 +14,6 @@ public class SubtaskHttpHandler  extends BaseHttpHandler {
     public SubtaskHttpHandler(TaskManager manager) {
         super(manager);
     }
-    public SubtaskHttpHandler() {
-        super();
-    }
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {

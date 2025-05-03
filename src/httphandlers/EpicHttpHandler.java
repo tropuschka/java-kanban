@@ -14,9 +14,6 @@ public class EpicHttpHandler  extends BaseHttpHandler {
     public EpicHttpHandler(TaskManager manager) {
         super(manager);
     }
-    public EpicHttpHandler() {
-        super();
-    }
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
