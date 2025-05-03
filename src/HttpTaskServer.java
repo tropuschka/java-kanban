@@ -11,11 +11,15 @@ import java.net.InetSocketAddress;
 
 public class HttpTaskServer {
     private static HttpServer server;
-    private static final TaskManager manager = Managers.createTaskManager();
+    private static TaskManager manager;
+
+    public void HttpTaskServer() throws IOException {
+        manager = Managers.createTaskManager();
+        server = HttpServer.create(new InetSocketAddress(8080), 0);
+    }
 
 
     public static void main(String[] args) throws Exception {
-        server = HttpServer.create(new InetSocketAddress(8080), 0);
         server.createContext("/", new BaseHttpHandler());
         server.createContext("/stop", new StopHandler());
         server.createContext("/task", new TaskHttpHandler(manager));
@@ -30,6 +34,10 @@ public class HttpTaskServer {
         server.start();
     }
 
+    public static void stop() {
+        server.stop(60);
+    }
+
     static class StopHandler implements HttpHandler { //странно работает, но работает
         @Override
         public void handle(HttpExchange t) throws IOException {
@@ -38,7 +46,7 @@ public class HttpTaskServer {
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
             os.close();
-            server.stop(100);
+            stop();
         }
     }
 }
