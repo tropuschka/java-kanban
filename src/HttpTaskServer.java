@@ -21,7 +21,6 @@ public class HttpTaskServer {
 
     public static void main(String[] args) throws Exception {
         server.createContext("/", new BaseHttpHandler());
-        server.createContext("/stop", new StopHandler());
         server.createContext("/task", new TaskHttpHandler(manager));
         server.createContext("/epic", new EpicHttpHandler(manager));
         server.createContext("/subtask", new SubtaskHttpHandler(manager));
@@ -36,17 +35,5 @@ public class HttpTaskServer {
 
     public static void stop() {
         server.stop(60);
-    }
-
-    static class StopHandler implements HttpHandler { //странно работает, но работает
-        @Override
-        public void handle(HttpExchange t) throws IOException {
-            String response = "Stop!";
-            t.sendResponseHeaders(200, response.length());
-            OutputStream os = t.getResponseBody();
-            os.write(response.getBytes());
-            os.close();
-            stop();
-        }
     }
 }
