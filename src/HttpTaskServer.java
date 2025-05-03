@@ -1,7 +1,5 @@
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import com.sun.net.httpserver.HttpServer;
-import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpExchange;
 import httphandlers.*;
 import managing.Managers;
@@ -10,8 +8,6 @@ import managing.TaskManager;
 import java.io.OutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-
-import java.net.Socket;
 
 public class HttpTaskServer {
     private static HttpServer server;

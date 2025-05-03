@@ -1,12 +1,8 @@
 package httphandlers;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import managing.Managers;
 import managing.TaskManager;
 import taskmodels.Epic;
 import taskmodels.Subtask;
@@ -18,8 +14,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
 public class BaseHttpHandler implements HttpHandler {
     protected TaskManager manager;

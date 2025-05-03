@@ -1,16 +1,11 @@
 package httphandlers;
 
 import com.sun.net.httpserver.HttpExchange;
-import managing.HistoryManager;
 import managing.TaskManager;
 import taskmodels.Task;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class HistoryHttpHandler  extends BaseHttpHandler {
