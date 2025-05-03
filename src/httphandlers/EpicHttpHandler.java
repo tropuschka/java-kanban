@@ -73,7 +73,7 @@ public class EpicHttpHandler  extends BaseHttpHandler {
                 if (requestArray[1].equals("epic") && requestArray.length == 2) {
                     manager.deleteAllEpics();
                     sendText(exchange, "All tasks deleted");
-                } else if (requestArray[1].equals("task") && requestArray.length == 3 && isNumber(requestArray[2])) {
+                } else if (requestArray[1].equals("epic") && requestArray.length == 3 && isNumber(requestArray[2])) {
                     int taskId = Integer.parseInt(requestArray[2]);
                     if (manager.findEpicById(taskId) == null) sendNotFound(exchange, "Not Found");
                     String taskName = manager.findEpicById(taskId).getName();
