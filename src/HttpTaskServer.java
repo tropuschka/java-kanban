@@ -23,6 +23,10 @@ public class HttpTaskServer {
         server.createContext("/subtask", new SubtaskHttpHandler(manager));
         server.createContext("/history", new HistoryHttpHandler(manager));
         server.createContext("/priority", new PriorityHttpHandler(manager));
+        start();
+    }
+
+    public static void start() {
         server.start();
     }
 
