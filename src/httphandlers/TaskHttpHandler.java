@@ -1,10 +1,8 @@
 package httphandlers;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 import managing.Managers;
 import managing.TaskManager;
 import taskmodels.Task;
@@ -12,6 +10,10 @@ import taskmodels.Task;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -23,31 +25,32 @@ public class TaskHttpHandler extends BaseHttpHandler {
     public TaskHttpHandler(TaskManager manager) {
         super(manager);
     }
+    public TaskHttpHandler() {
+        super();
+    }
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        InputStream input = exchange.getRequestBody();
+        URI request = exchange.getRequestURI();
         String method = exchange.getRequestMethod();
-        String body = new String(input.readAllBytes(), StandardCharsets.UTF_8);
+        String url = request.toString();
+        int questionIndex = url.indexOf("?");
+        String cutRequest;
+        if (questionIndex != -1) cutRequest = url.substring(0, questionIndex);
+        else cutRequest = url;
+        String[] requestArray = cutRequest.split("/");
         Task task;
-
-        Gson gson = new Gson();
-        JsonElement jElem = JsonParser.parseString(body);
-
-        int indexQuestion = body.indexOf("?");
-        body = body.substring(0, indexQuestion);
-        String[] bodyArray = body.split("/");
 
         switch (method) {
             case "POST":
-                if (bodyArray[1].equals("task") && bodyArray.length == 2) {
-                    task = newTask(jElem);
+                if (requestArray[1].equals("task") && requestArray.length == 2) {
+                    task = new Task(0, "Name", "descr");
                     manager.createTask(task);
                     if (manager.findTaskById(task.getId()) == null) sendHasInteractions(exchange, "Not Acceptable");
                     sendText(exchange, "Task \"" + task.getName() + "\" created");
-                } else if (bodyArray[1].equals("task") && bodyArray.length == 3 && isNumber(bodyArray[2])) {
-                    int taskId = Integer.parseInt(bodyArray[2]);
-                    task = newTask(jElem, taskId);
+                } else if (requestArray[1].equals("task") && requestArray.length == 3 && isNumber(requestArray[2])) {
+                    int taskId = Integer.parseInt(requestArray[2]);
+                    task = new Task(taskId, "Name", "descr");
                     Task oldTask = manager.findTaskById(taskId);
                     if (oldTask == null) sendNotFound(exchange, "Not Found");
                     manager.updateTask(task);
@@ -57,28 +60,27 @@ public class TaskHttpHandler extends BaseHttpHandler {
                     sendText(exchange, "Task \"" + task.getName() + "\" updated");
                 } else sendNotFound(exchange, "Not Found");
             case "GET":
-                if (bodyArray[1].equals("task") && bodyArray.length == 2) {
+                if (requestArray[1].equals("task") && requestArray.length == 2) {
                     ArrayList<Task> allTasksArray = manager.getAllTasks();
+                    if (allTasksArray.isEmpty()) sendNotFound(exchange, "Not Found");
                     String response = allTasksArray.stream().map(Task::toString).collect(Collectors.joining("\n"));
                     sendText(exchange, response);
-                } else if (bodyArray[1].equals("task") && bodyArray.length == 3 && isNumber(bodyArray[2])) {
-                    int taskId = Integer.parseInt(bodyArray[2]);
+                } else if (requestArray[1].equals("task") && requestArray.length == 3 && isNumber(requestArray[2])) {
+                    int taskId = Integer.parseInt(requestArray[2]);
                     task = manager.findTaskById(taskId);
                     if (task == null) sendNotFound(exchange, "Not found");
                     String response = task.toString();
                     sendText(exchange, response);
                 } else sendNotFound(exchange, "Not Found");
             case "DELETE":
-                if (bodyArray[1].equals("task") && bodyArray.length == 2) {
+                if (requestArray[1].equals("task") && requestArray.length == 2) {
                     manager.deleteAllTasks();
-                    if (manager.getAllTasks() != null) sendHasInteractions(exchange, "Not Acceptable");
                     sendText(exchange, "All tasks deleted");
-                } else if (bodyArray[1].equals("task") && bodyArray.length == 3 && isNumber(bodyArray[2])) {
-                    int taskId = Integer.parseInt(bodyArray[2]);
+                } else if (requestArray[1].equals("task") && requestArray.length == 3 && isNumber(requestArray[2])) {
+                    int taskId = Integer.parseInt(requestArray[2]);
                     if (manager.findTaskById(taskId) == null) sendNotFound(exchange, "Not Found");
                     String taskName = manager.findTaskById(taskId).getName();
                     manager.deleteTask(taskId);
-                    if (manager.findTaskById(taskId) != null) sendHasInteractions(exchange, "Not Acceptable");
                     sendText(exchange, "Task \"" + taskName + "\" deleted");
                 } else sendNotFound(exchange, "Not Found");
             default:
