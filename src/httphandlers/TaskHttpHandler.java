@@ -63,6 +63,7 @@ public class TaskHttpHandler extends BaseHttpHandler {
                     }
                     sendText(exchange, "Task \"" + task.getName() + "\" updated");
                 } else sendNotFound(exchange, "Not Found");
+                break;
             case "GET":
                 if (requestArray[1].equals("task") && requestArray.length == 2) {
                     ArrayList<Task> allTasksArray = manager.getAllTasks();
@@ -76,6 +77,7 @@ public class TaskHttpHandler extends BaseHttpHandler {
                     String response = task.toString();
                     sendText(exchange, response);
                 } else sendNotFound(exchange, "Not Found");
+                break;
             case "DELETE":
                 if (requestArray[1].equals("task") && requestArray.length == 2) {
                     manager.deleteAllTasks();
@@ -87,6 +89,7 @@ public class TaskHttpHandler extends BaseHttpHandler {
                     manager.deleteTask(taskId);
                     sendText(exchange, "Task \"" + taskName + "\" deleted");
                 } else sendNotFound(exchange, "Not Found");
+                break;
             default:
                 sendNotFound(exchange, "Not Found");
         }

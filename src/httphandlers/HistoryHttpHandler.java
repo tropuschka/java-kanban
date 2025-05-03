@@ -28,6 +28,7 @@ public class HistoryHttpHandler  extends BaseHttpHandler {
                     if (allTasksArray.isEmpty()) sendText(exchange, "History is empty");
                     String response = allTasksArray.stream().map(Task::toString).collect(Collectors.joining("\n"));
                     sendText(exchange, response);
+                break;
             default:
                 sendNotFound(exchange, "Not Found");
         }

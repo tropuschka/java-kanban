@@ -25,6 +25,7 @@ public class PriorityHttpHandler  extends BaseHttpHandler {
                 if (allTasksArray.isEmpty()) sendNotFound(exchange, "Not Found");
                 String response = allTasksArray.stream().map(Task::toString).collect(Collectors.joining("\n"));
                 sendText(exchange, response);
+                break;
             default:
                 sendNotFound(exchange, "Not Found");
         }

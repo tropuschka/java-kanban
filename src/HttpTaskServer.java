@@ -4,7 +4,6 @@ import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpExchange;
 import httphandlers.*;
-import managing.HistoryManager;
 import managing.Managers;
 import managing.TaskManager;
 

@@ -56,6 +56,7 @@ public class EpicHttpHandler  extends BaseHttpHandler {
                     }
                     sendText(exchange, "Task \"" + task.getName() + "\" updated");
                 } else sendNotFound(exchange, "Not Found");
+                break;
             case "GET":
                 if (requestArray[1].equals("epic") && requestArray.length == 2) {
                     ArrayList<Epic> allTasksArray = manager.getAllEpic();
@@ -69,6 +70,7 @@ public class EpicHttpHandler  extends BaseHttpHandler {
                     String response = task.toString();
                     sendText(exchange, response);
                 } else sendNotFound(exchange, "Not Found");
+                break;
             case "DELETE":
                 if (requestArray[1].equals("epic") && requestArray.length == 2) {
                     manager.deleteAllEpics();
@@ -80,6 +82,7 @@ public class EpicHttpHandler  extends BaseHttpHandler {
                     manager.deleteEpic(taskId);
                     sendText(exchange, "Task \"" + taskName + "\" deleted");
                 } else sendNotFound(exchange, "Not Found");
+                break;
             default:
                 sendNotFound(exchange, "Not Found");
         }
