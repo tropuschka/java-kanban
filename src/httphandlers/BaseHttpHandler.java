@@ -19,11 +19,11 @@ public class BaseHttpHandler implements HttpHandler {
     protected TaskManager manager;
     protected DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
-    public BaseHttpHandler () {
+    public BaseHttpHandler() {
         super();
     }
 
-    public BaseHttpHandler (TaskManager manager) {
+    public BaseHttpHandler(TaskManager manager) {
         super();
         this.manager = manager;
     }
@@ -117,9 +117,11 @@ public class BaseHttpHandler implements HttpHandler {
         }
 
         switch (type) {
-            case "epic": return new Epic(-1, taskName, taskDescription);
+            case "epic":
+                return new Epic(-1, taskName, taskDescription);
             case "subtask":
-                if (dateString != null) return new Subtask(-1, taskName, taskDescription, epicId, dateString, durationString);
+                if (dateString != null)
+                    return new Subtask(-1, taskName, taskDescription, epicId, dateString, durationString);
                 else return new Subtask(-1, taskName, taskDescription, epicId);
             default:
                 if (dateString != null) return new Task(-1, taskName, taskDescription, dateString, durationString);
@@ -167,9 +169,11 @@ public class BaseHttpHandler implements HttpHandler {
         }
 
         switch (type) {
-            case "epic": return new Epic(taskId, taskName, taskDescription);
+            case "epic":
+                return new Epic(taskId, taskName, taskDescription);
             case "subtask":
-                if (dateString != null) return new Subtask(taskId, taskName, taskDescription, epicId, dateString, durationString);
+                if (dateString != null)
+                    return new Subtask(taskId, taskName, taskDescription, epicId, dateString, durationString);
                 else return new Subtask(taskId, taskName, taskDescription, epicId);
             default:
                 if (dateString != null) return new Task(taskId, taskName, taskDescription, dateString, durationString);
