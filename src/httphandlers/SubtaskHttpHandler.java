@@ -26,8 +26,7 @@ public class SubtaskHttpHandler  extends BaseHttpHandler {
         if (questionIndex != -1) {
             cutRequest = url.substring(0, questionIndex);
             parameterString = url.substring(questionIndex + 1);
-        }
-        else cutRequest = url;
+        } else cutRequest = url;
         String[] requestArray = cutRequest.split("/");
         Subtask task;
 
