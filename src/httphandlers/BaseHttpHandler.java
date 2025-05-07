@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 public class BaseHttpHandler implements HttpHandler {
     protected TaskManager manager;
@@ -179,5 +180,12 @@ public class BaseHttpHandler implements HttpHandler {
                 if (dateString != null) return new Task(taskId, taskName, taskDescription, dateString, durationString);
                 else return new Task(taskId, taskName, taskDescription);
         }
+    }
+
+    protected Integer getIdFromPath(String path) {
+        String[] pathArray = path.split("/");
+        Optional<Integer> optId = Optional.of(Integer.parseInt(pathArray[3]));
+        if (optId.isPresent()) return optId.get();
+        else return -1;
     }
 }
