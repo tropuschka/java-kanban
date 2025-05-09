@@ -1,5 +1,6 @@
 package httphandlers;
 
+import com.google.gson.Gson;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -58,8 +59,8 @@ public class BaseHttpHandler implements HttpHandler {
         exchange.close();
     }
 
-    protected void sendHasInteractions(HttpExchange exchange, String text) throws IOException {
-        byte[] response = text.getBytes(StandardCharsets.UTF_8);
+    protected void sendHasInteractions(HttpExchange exchange) throws IOException {
+        byte[] response = "Задание пересекается с существующими".getBytes(StandardCharsets.UTF_8);
         exchange.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
         exchange.sendResponseHeaders(406, response.length);
         exchange.getResponseBody().write(response);
@@ -185,7 +186,12 @@ public class BaseHttpHandler implements HttpHandler {
     protected Integer getIdFromPath(String path) {
         String[] pathArray = path.split("/");
         Optional<Integer> optId = Optional.of(Integer.parseInt(pathArray[3]));
-        if (optId.isPresent()) return optId.get();
-        else return -1;
+        return optId.get();
+    }
+
+    protected String readText(HttpExchange exchange) {
+        Gson gson = new Gson();
+        String body = exchange.getResponseBody().toString();
+        return gson.toJson(exchange);
     }
 }
