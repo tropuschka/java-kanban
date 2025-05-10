@@ -10,9 +10,9 @@ public class HttpTaskServer {
     private static HttpServer server;
     private static TaskManager manager;
 
-    public HttpTaskServer() throws IOException {
-    //    manager = Managers.createTaskManager();
-    //    server = HttpServer.create(new InetSocketAddress(8080), 0);
+    public HttpTaskServer(TaskManager manager) throws IOException {
+    this.manager = manager;
+    server = HttpServer.create(new InetSocketAddress(8080), 0);
     }
 
 
