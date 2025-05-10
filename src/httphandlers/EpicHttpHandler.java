@@ -1,12 +1,15 @@
 package httphandlers;
 
+import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
+import exceptions.TaskValidationException;
 import managing.TaskManager;
 import taskmodels.Epic;
 
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -17,66 +20,69 @@ public class EpicHttpHandler  extends BaseHttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        URI request = exchange.getRequestURI();
-        String method = exchange.getRequestMethod();
-        String url = request.toString();
-        int questionIndex = url.indexOf("?");
-        String cutRequest;
-        String parameterString = null;
-        if (questionIndex != -1) {
-            cutRequest = url.substring(0, questionIndex);
-            parameterString = url.substring(questionIndex + 1);
-        } else cutRequest = url;
-        String[] requestArray = cutRequest.split("/");
-        Epic task;
+        final String path = exchange.getRequestURI().getPath();
+        final Integer requestedId = getIdFromPath(path);
 
-        switch (method) {
-            case "POST":
-                if (requestArray[1].equals("epic") && requestArray.length == 2) {
-                    task = (Epic) newTask(parameterString, "epic");
-                    manager.createEpic(task);
-                    if (manager.findEpicById(task.getId()) == null) sendHasInteractions(exchange, "Not Acceptable");
-                    sendText(exchange, "Task \"" + task.getName() + "\" created");
-                } else if (requestArray[1].equals("epic") && requestArray.length == 3 && isNumber(requestArray[2])) {
-                    int taskId = Integer.parseInt(requestArray[2]);
-                    task = (Epic) newTask(parameterString, "epic", taskId);
-                    Epic oldTask = manager.findEpicById(taskId);
-                    if (oldTask == null) sendNotFound(exchange, "Not Found");
+        Gson gson = new Gson();
+
+        switch (exchange.getRequestMethod()) {
+            case "GET": {
+                if (requestedId == null) {
+                    final List<Epic> tasks = manager.getAllEpic();
+                    final String response = gson.toJson(tasks);
+                    System.out.println("Все эпики получены");
+                    sendText(exchange, response);
+                    return;
+                }
+
+                final Epic task = manager.findEpicById(requestedId);
+                if (task != null) {
+                    final String response = gson.toJson(task);
+                    System.out.println("Эпик с айди " + requestedId + " получен");
+                    sendText(exchange, response);
+                }
+                break;
+            }
+            case "POST": {
+                String json = readText(exchange, requestedId);
+                final Epic task = gson.fromJson(json, Epic.class);
+                final Integer id = task.getId();
+                if (id > 0) {
                     manager.updateEpic(task);
-                    if (Objects.equals(oldTask, manager.findEpicById(taskId)) || manager.findEpicById(taskId) == null) {
-                        sendHasInteractions(exchange, "Not Acceptable");
+                    System.out.println("Эпик с айди " + id + " обновлен");
+                    exchange.sendResponseHeaders(201, 0);
+                } else {
+                    try {
+                        int newId = manager.createEpic(task).getId();
+                        System.out.println("Эпик с айди " + newId + " создан");
+                        final String response = gson.toJson(task);
+                        sendText(exchange, response);
+                    } catch (TaskValidationException e) {
+                        System.out.println("Эпик пересекается с существующими");
+                        sendHasInteractions(exchange);
                     }
-                    sendText(exchange, "Task \"" + task.getName() + "\" updated");
-                } else sendNotFound(exchange, "Not Found");
+                }
                 break;
-            case "GET":
-                if (requestArray[1].equals("epic") && requestArray.length == 2) {
-                    ArrayList<Epic> allTasksArray = manager.getAllEpic();
-                    if (allTasksArray.isEmpty()) sendNotFound(exchange, "Not Found");
-                    String response = allTasksArray.stream().map(Epic::toString).collect(Collectors.joining("\n"));
-                    sendText(exchange, response);
-                } else if (requestArray[1].equals("epic") && requestArray.length == 3 && isNumber(requestArray[2])) {
-                    int taskId = Integer.parseInt(requestArray[2]);
-                    task = manager.findEpicById(taskId);
-                    if (task == null) sendNotFound(exchange, "Not found");
-                    String response = task.toString();
-                    sendText(exchange, response);
-                } else sendNotFound(exchange, "Not Found");
-                break;
-            case "DELETE":
-                if (requestArray[1].equals("epic") && requestArray.length == 2) {
+            }
+            case "DELETE":{
+                if (requestedId == null) {
                     manager.deleteAllEpics();
-                    sendText(exchange, "All tasks deleted");
-                } else if (requestArray[1].equals("epic") && requestArray.length == 3 && isNumber(requestArray[2])) {
-                    int taskId = Integer.parseInt(requestArray[2]);
-                    if (manager.findEpicById(taskId) == null) sendNotFound(exchange, "Not Found");
-                    String taskName = manager.findEpicById(taskId).getName();
-                    manager.deleteEpic(taskId);
-                    sendText(exchange, "Task \"" + taskName + "\" deleted");
-                } else sendNotFound(exchange, "Not Found");
+                    System.out.println("Все эпики удалены");
+                    exchange.sendResponseHeaders(201, 0);
+                    return;
+                }
+
+                final Epic task = manager.findEpicById(requestedId);
+                if (task != null) {
+                    manager.deleteEpic(requestedId);
+                    System.out.println("Эпик с айди" + requestedId + " удален");
+                    exchange.sendResponseHeaders(201, 0);
+                }
                 break;
-            default:
-                sendNotFound(exchange, "Not Found");
+            }
+            default: {
+                sendNotFound(exchange);
+            }
         }
     }
 }

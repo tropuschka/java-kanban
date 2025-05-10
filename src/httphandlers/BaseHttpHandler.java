@@ -106,7 +106,8 @@ public class BaseHttpHandler implements HttpHandler {
         String type = exchange.getRequestURI().getPath().split("/")[1];
         switch (type) {
             case "epic": {
-                return "Epic";
+                Epic task = new Epic(queryMap, id);
+                return gson.toJson(task);
             }
             case "subtask": {
                 return "Sub";

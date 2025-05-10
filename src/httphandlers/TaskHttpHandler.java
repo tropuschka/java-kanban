@@ -30,7 +30,7 @@ public class TaskHttpHandler extends BaseHttpHandler {
                 if (requestedId == null) {
                     final List<Task> tasks = manager.getAllTasks();
                     final String response = gson.toJson(tasks);
-                    System.out.println("Все задания получены");
+                    System.out.println("Все задачи получены");
                     sendText(exchange, response);
                     return;
                 }
@@ -38,7 +38,7 @@ public class TaskHttpHandler extends BaseHttpHandler {
                 final Task task = manager.findTaskById(requestedId);
                 if (task != null) {
                     final String response = gson.toJson(task);
-                    System.out.println("Задание с айди " + requestedId + " получено");
+                    System.out.println("Задача с айди " + requestedId + " получена");
                     sendText(exchange, response);
                 }
                 break;
@@ -49,12 +49,12 @@ public class TaskHttpHandler extends BaseHttpHandler {
                 final Integer id = task.getId();
                 if (id > 0) {
                     manager.updateTask(task);
-                    System.out.println("Задание с айди " + id + " обновлено");
+                    System.out.println("Задача с айди " + id + " обновлена");
                     exchange.sendResponseHeaders(201, 0);
                 } else {
                     try {
                         int newId = manager.createTask(task).getId();
-                        System.out.println("Задание с айди " + newId + " создано");
+                        System.out.println("Задача с айди " + newId + " создана");
                         final String response = gson.toJson(task);
                         sendText(exchange, response);
                     } catch (TaskValidationException e) {
@@ -67,7 +67,7 @@ public class TaskHttpHandler extends BaseHttpHandler {
             case "DELETE":{
                 if (requestedId == null) {
                     manager.deleteAllTasks();
-                    System.out.println("Все задания удалены");
+                    System.out.println("Все задачи удалены");
                     exchange.sendResponseHeaders(201, 0);
                     return;
                 }
@@ -75,7 +75,7 @@ public class TaskHttpHandler extends BaseHttpHandler {
                 final Task task = manager.findTaskById(requestedId);
                 if (task != null) {
                     manager.deleteTask(requestedId);
-                    System.out.println("Задание с айди" + requestedId + " удалено");
+                    System.out.println("Задача с айди" + requestedId + " удалена");
                     exchange.sendResponseHeaders(201, 0);
                 }
                 break;
