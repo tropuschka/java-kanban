@@ -15,6 +15,8 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class BaseHttpHandler implements HttpHandler {
@@ -85,9 +87,26 @@ public class BaseHttpHandler implements HttpHandler {
         return optId.get();
     }
 
-    protected String readText(HttpExchange exchange) {
+    protected String readText(HttpExchange exchange, Integer id) {
         Gson gson = new Gson();
-        String body = exchange.getResponseBody().toString();
-        return gson.toJson(exchange);
+        String query = exchange.getRequestURI().getQuery();
+        Map<String, String> queryMap = new HashMap<>();
+        for (String param : query.split("&")) {
+            int equalIndex = param.indexOf("=");
+            queryMap.put(param.substring(0, equalIndex), param.substring(equalIndex + 1));
+        }
+        String type = exchange.getRequestURI().getPath().split("/")[1];
+        switch (type) {
+            case "epic": {
+                return "Epic";
+            }
+            case "subtask": {
+                return "Sub";
+            }
+            default: {
+                Task task = new Task(queryMap, id);
+                return gson.toJson(task);
+            }
+        }
     }
 }
