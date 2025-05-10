@@ -20,69 +20,74 @@ public class SubtaskHttpHandler  extends BaseHttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        final String path = exchange.getRequestURI().getPath();
-        final Integer requestedId = getIdFromPath(path);
+        try {
+            final String path = exchange.getRequestURI().getPath();
+            final Integer requestedId = getIdFromPath(path);
 
-        Gson gson = new Gson();
+            Gson gson = new Gson();
 
-        switch (exchange.getRequestMethod()) {
-            case "GET": {
-                if (requestedId == null) {
-                    final List<Subtask> tasks = manager.getAllSubtasks();
-                    final String response = gson.toJson(tasks);
-                    System.out.println("Все подзадачи получены");
-                    sendText(exchange, response);
-                    return;
-                }
-
-                final Subtask task = manager.findSubtaskById(requestedId);
-                if (task != null) {
-                    final String response = gson.toJson(task);
-                    System.out.println("Подзадача с айди " + requestedId + " получена");
-                    sendText(exchange, response);
-                }
-                break;
-            }
-            case "POST": {
-                String json = readText(exchange, requestedId);
-                final Subtask task = gson.fromJson(json, Subtask.class);
-                final Integer id = task.getId();
-                if (id > 0) {
-                    manager.updateSubtask(task);
-                    System.out.println("Подзадача с айди " + id + " обновлена");
-                    exchange.sendResponseHeaders(201, 0);
-                } else {
-                    try {
-                        int newId = manager.createSubtask(task).getId();
-                        System.out.println("Подзадача с айди " + newId + " создана");
-                        final String response = gson.toJson(task);
+            switch (exchange.getRequestMethod()) {
+                case "GET": {
+                    if (requestedId == null) {
+                        final List<Subtask> tasks = manager.getAllSubtasks();
+                        final String response = gson.toJson(tasks);
+                        System.out.println("Все подзадачи получены");
                         sendText(exchange, response);
-                    } catch (TaskValidationException e) {
-                        System.out.println("Подзадача пересекается с существующими");
-                        sendHasInteractions(exchange);
+                        return;
                     }
-                }
-                break;
-            }
-            case "DELETE":{
-                if (requestedId == null) {
-                    manager.deleteAllSubtasks();
-                    System.out.println("Все подзадачи удалены");
-                    exchange.sendResponseHeaders(201, 0);
-                    return;
-                }
 
-                final Subtask task = manager.findSubtaskById(requestedId);
-                if (task != null) {
-                    manager.deleteSubtask(task);
-                    System.out.println("Подзадача с айди" + requestedId + " удалена");
-                    exchange.sendResponseHeaders(201, 0);
+                    final Subtask task = manager.findSubtaskById(requestedId);
+                    if (task != null) {
+                        final String response = gson.toJson(task);
+                        System.out.println("Подзадача с айди " + requestedId + " получена");
+                        sendText(exchange, response);
+                    }
+                    break;
                 }
-                break;
+                case "POST": {
+                    String json = readText(exchange, requestedId);
+                    final Subtask task = gson.fromJson(json, Subtask.class);
+                    final Integer id = task.getId();
+                    if (id > 0) {
+                        manager.updateSubtask(task);
+                        System.out.println("Подзадача с айди " + id + " обновлена");
+                        exchange.sendResponseHeaders(201, 0);
+                    } else {
+                        try {
+                            int newId = manager.createSubtask(task).getId();
+                            System.out.println("Подзадача с айди " + newId + " создана");
+                            final String response = gson.toJson(task);
+                            sendText(exchange, response);
+                        } catch (TaskValidationException e) {
+                            System.out.println("Подзадача пересекается с существующими");
+                            sendHasInteractions(exchange);
+                        }
+                    }
+                    break;
+                }
+                case "DELETE":{
+                    if (requestedId == null) {
+                        manager.deleteAllSubtasks();
+                        System.out.println("Все подзадачи удалены");
+                        exchange.sendResponseHeaders(201, 0);
+                        return;
+                    }
+
+                    final Subtask task = manager.findSubtaskById(requestedId);
+                    if (task != null) {
+                        manager.deleteSubtask(task);
+                        System.out.println("Подзадача с айди" + requestedId + " удалена");
+                        exchange.sendResponseHeaders(201, 0);
+                    }
+                    break;
+                }
+                default: {
+                    sendNotFound(exchange);
+                }
             }
-            default: {
-                sendNotFound(exchange);
-            }
+        } catch (Exception e) {
+            System.out.println(e);
+            sendServerError(exchange);
         }
     }
 }

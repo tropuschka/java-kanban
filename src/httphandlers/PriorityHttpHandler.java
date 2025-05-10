@@ -17,21 +17,26 @@ public class PriorityHttpHandler  extends BaseHttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        String method = exchange.getRequestMethod();
-        Gson gson = new Gson();
+        try {
+            String method = exchange.getRequestMethod();
+            Gson gson = new Gson();
 
-        switch (method) {
-            case "GET":
-                List<Task> allTasksArray = manager.getPrioritizedTasks();
-                if (!allTasksArray.isEmpty()) {
-                    String response = gson.toJson(allTasksArray.stream()
-                            .map(Task::toString)
-                            .collect(Collectors.joining("\n")));
-                    sendText(exchange, response);
-                }
-                break;
-            default:
-                sendNotFound(exchange);
+            switch (method) {
+                case "GET":
+                    List<Task> allTasksArray = manager.getPrioritizedTasks();
+                    if (!allTasksArray.isEmpty()) {
+                        String response = gson.toJson(allTasksArray.stream()
+                                .map(Task::toString)
+                                .collect(Collectors.joining("\n")));
+                        sendText(exchange, response);
+                    }
+                    break;
+                default:
+                    sendNotFound(exchange);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            sendServerError(exchange);
         }
     }
 }

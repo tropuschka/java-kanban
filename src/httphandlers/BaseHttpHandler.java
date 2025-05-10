@@ -39,7 +39,7 @@ public class BaseHttpHandler implements HttpHandler {
 
             sendHasInteractions(httpExchange);
         } catch (Exception e) {
-            sendNotFound(httpExchange, "Error");
+            sendNotFound(httpExchange);
         }
     }
 
