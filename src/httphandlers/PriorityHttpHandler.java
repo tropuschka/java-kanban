@@ -1,11 +1,14 @@
 package httphandlers;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import managing.TaskManager;
 import taskmodels.Task;
+import typeadapter.LocalDateTypeAdapter;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,7 +22,9 @@ public class PriorityHttpHandler  extends BaseHttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         try {
             String method = exchange.getRequestMethod();
-            Gson gson = new Gson();
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
+                    .create();
 
             switch (method) {
                 case "GET":

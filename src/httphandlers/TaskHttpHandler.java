@@ -1,13 +1,16 @@
 package httphandlers;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import exceptions.TaskValidationException;
 import managing.TaskManager;
 import taskmodels.Task;
+import typeadapter.LocalDateTypeAdapter;
 
 import java.io.IOException;
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -24,7 +27,9 @@ public class TaskHttpHandler extends BaseHttpHandler {
             final String path = exchange.getRequestURI().getPath();
             final Integer requestedId = getIdFromPath(path);
 
-            Gson gson = new Gson();
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
+                    .create();
 
             switch (exchange.getRequestMethod()) {
                 case "GET": {
