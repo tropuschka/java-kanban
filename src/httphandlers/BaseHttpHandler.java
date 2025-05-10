@@ -95,13 +95,18 @@ public class BaseHttpHandler implements HttpHandler {
         return optId.get();
     }
 
-    protected String readText(HttpExchange exchange, Integer id) {
+    protected String readText(HttpExchange exchange, Integer id) throws IOException {
         Gson gson = new Gson();
         String query = exchange.getRequestURI().getQuery();
         Map<String, String> queryMap = new HashMap<>();
         for (String param : query.split("&")) {
             int equalIndex = param.indexOf("=");
             queryMap.put(param.substring(0, equalIndex), param.substring(equalIndex + 1));
+        }
+        if (queryMap.get("epic-id") != null && !isNumber(queryMap.get("epic-id"))) {
+            System.out.println("Not Acceptable Epic Id");
+            sendHasInteractions(exchange);
+            return null;
         }
         String type = exchange.getRequestURI().getPath().split("/")[1];
         switch (type) {
@@ -110,7 +115,8 @@ public class BaseHttpHandler implements HttpHandler {
                 return gson.toJson(task);
             }
             case "subtask": {
-                return "Sub";
+                Subtask task = new Subtask(queryMap, id);
+                return gson.toJson(task);
             }
             default: {
                 Task task = new Task(queryMap, id);

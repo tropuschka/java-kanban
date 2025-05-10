@@ -1,12 +1,15 @@
 package httphandlers;
 
+import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
+import exceptions.TaskValidationException;
 import managing.TaskManager;
 import taskmodels.Subtask;
 
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -17,67 +20,69 @@ public class SubtaskHttpHandler  extends BaseHttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        URI request = exchange.getRequestURI();
-        String method = exchange.getRequestMethod();
-        String url = request.toString();
-        int questionIndex = url.indexOf("?");
-        String cutRequest;
-        String parameterString = null;
-        if (questionIndex != -1) {
-            cutRequest = url.substring(0, questionIndex);
-            parameterString = url.substring(questionIndex + 1);
-        } else cutRequest = url;
-        String[] requestArray = cutRequest.split("/");
-        Subtask task;
+        final String path = exchange.getRequestURI().getPath();
+        final Integer requestedId = getIdFromPath(path);
 
-        switch (method) {
-            case "POST":
-                if (requestArray[1].equals("subtask") && requestArray.length == 2) {
-                    task = (Subtask) newTask(parameterString, "subtask");
-                    manager.createSubtask(task);
-                    if (manager.findSubtaskById(task.getId()) == null) sendHasInteractions(exchange, "Not Acceptable");
-                    sendText(exchange, "Subtask \"" + task.getName() + "\" created");
-                } else if (requestArray[1].equals("subtask") && requestArray.length == 3 && isNumber(requestArray[2])) {
-                    int taskId = Integer.parseInt(requestArray[2]);
-                    task = (Subtask) newTask(parameterString, "subtask", taskId);
-                    Subtask oldTask = manager.findSubtaskById(taskId);
-                    if (oldTask == null) sendNotFound(exchange, "Not Found");
+        Gson gson = new Gson();
+
+        switch (exchange.getRequestMethod()) {
+            case "GET": {
+                if (requestedId == null) {
+                    final List<Subtask> tasks = manager.getAllSubtasks();
+                    final String response = gson.toJson(tasks);
+                    System.out.println("Все подзадачи получены");
+                    sendText(exchange, response);
+                    return;
+                }
+
+                final Subtask task = manager.findSubtaskById(requestedId);
+                if (task != null) {
+                    final String response = gson.toJson(task);
+                    System.out.println("Подзадача с айди " + requestedId + " получена");
+                    sendText(exchange, response);
+                }
+                break;
+            }
+            case "POST": {
+                String json = readText(exchange, requestedId);
+                final Subtask task = gson.fromJson(json, Subtask.class);
+                final Integer id = task.getId();
+                if (id > 0) {
                     manager.updateSubtask(task);
-                    if (Objects.equals(oldTask, manager.findSubtaskById(taskId)) || manager.findSubtaskById(taskId) == null) {
-                        sendHasInteractions(exchange, "Not Acceptable");
+                    System.out.println("Подзадача с айди " + id + " обновлена");
+                    exchange.sendResponseHeaders(201, 0);
+                } else {
+                    try {
+                        int newId = manager.createSubtask(task).getId();
+                        System.out.println("Подзадача с айди " + newId + " создана");
+                        final String response = gson.toJson(task);
+                        sendText(exchange, response);
+                    } catch (TaskValidationException e) {
+                        System.out.println("Подзадача пересекается с существующими");
+                        sendHasInteractions(exchange);
                     }
-                    sendText(exchange, "Subtask \"" + task.getName() + "\" updated");
-                } else sendNotFound(exchange, "Not Found");
+                }
                 break;
-            case "GET":
-                if (requestArray[1].equals("subtask") && requestArray.length == 2) {
-                    ArrayList<Subtask> allTasksArray = manager.getAllSubtasks();
-                    if (allTasksArray.isEmpty()) sendNotFound(exchange, "Not Found");
-                    String response = allTasksArray.stream().map(Subtask::toString).collect(Collectors.joining("\n"));
-                    sendText(exchange, response);
-                } else if (requestArray[1].equals("subtask") && requestArray.length == 3 && isNumber(requestArray[2])) {
-                    int taskId = Integer.parseInt(requestArray[2]);
-                    task = manager.findSubtaskById(taskId);
-                    if (task == null) sendNotFound(exchange, "Not found");
-                    String response = task.toString();
-                    sendText(exchange, response);
-                } else sendNotFound(exchange, "Not Found");
-                break;
-            case "DELETE":
-                if (requestArray[1].equals("subtask") && requestArray.length == 2) {
+            }
+            case "DELETE":{
+                if (requestedId == null) {
                     manager.deleteAllSubtasks();
-                    sendText(exchange, "All subtasks deleted");
-                } else if (requestArray[1].equals("subtask") && requestArray.length == 3 && isNumber(requestArray[2])) {
-                    int taskId = Integer.parseInt(requestArray[2]);
-                    if (manager.findSubtaskById(taskId) == null) sendNotFound(exchange, "Not Found");
-                    task = manager.findSubtaskById(taskId);
-                    String taskName = manager.findSubtaskById(taskId).getName();
+                    System.out.println("Все подзадачи удалены");
+                    exchange.sendResponseHeaders(201, 0);
+                    return;
+                }
+
+                final Subtask task = manager.findSubtaskById(requestedId);
+                if (task != null) {
                     manager.deleteSubtask(task);
-                    sendText(exchange, "Subtask \"" + taskName + "\" deleted");
-                } else sendNotFound(exchange, "Not Found");
+                    System.out.println("Подзадача с айди" + requestedId + " удалена");
+                    exchange.sendResponseHeaders(201, 0);
+                }
                 break;
-            default:
-                sendNotFound(exchange, "Not Found");
+            }
+            default: {
+                sendNotFound(exchange);
+            }
         }
     }
 }
