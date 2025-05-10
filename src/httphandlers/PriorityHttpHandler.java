@@ -5,9 +5,11 @@ import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import managing.TaskManager;
 import taskmodels.Task;
+import typeadapter.DurationTypeAdapter;
 import typeadapter.LocalDateTypeAdapter;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,7 @@ public class PriorityHttpHandler  extends BaseHttpHandler {
             String method = exchange.getRequestMethod();
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
+                    .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
                     .create();
 
             switch (method) {

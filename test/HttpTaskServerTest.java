@@ -5,6 +5,7 @@ import org.junit.jupiter.api.*;
 import taskmodels.Epic;
 import taskmodels.Subtask;
 import taskmodels.Task;
+import typeadapter.DurationTypeAdapter;
 import typeadapter.LocalDateTypeAdapter;
 
 import java.io.IOException;
@@ -12,7 +13,9 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,7 +24,8 @@ public class HttpTaskServerTest {
     private static HttpTaskServer httpServer;
     private static InMemoryTaskManager manager = new InMemoryTaskManager();
     Gson gson = new GsonBuilder()
-            .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTypeAdapter())
+            .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
             .create();
 
     @BeforeAll

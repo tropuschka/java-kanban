@@ -6,10 +6,12 @@ import com.sun.net.httpserver.HttpExchange;
 import exceptions.TaskValidationException;
 import managing.TaskManager;
 import taskmodels.Epic;
+import typeadapter.DurationTypeAdapter;
 import typeadapter.LocalDateTypeAdapter;
 
 import java.io.IOException;
 import java.net.URI;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,7 @@ public class EpicHttpHandler  extends BaseHttpHandler {
 
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
+                    .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
                     .create();
 
             switch (exchange.getRequestMethod()) {
