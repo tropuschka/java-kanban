@@ -11,12 +11,14 @@ public class HttpTaskServer {
     private static TaskManager manager;
 
     public HttpTaskServer() throws IOException {
-        manager = Managers.createTaskManager();
-        server = HttpServer.create(new InetSocketAddress(8080), 0);
+    //    manager = Managers.createTaskManager();
+    //    server = HttpServer.create(new InetSocketAddress(8080), 0);
     }
 
 
     public static void main(String[] args) throws Exception {
+        server = HttpServer.create(new InetSocketAddress(8080), 0);
+        manager = Managers.createTaskManager();
         server.createContext("/", new BaseHttpHandler());
         server.createContext("/task", new TaskHttpHandler(manager));
         server.createContext("/epic", new EpicHttpHandler(manager));

@@ -35,7 +35,7 @@ public class BaseHttpHandler implements HttpHandler {
         try {
             System.out.println("Start");
 
-            sendHasInteractions(httpExchange, "Oops");
+            sendHasInteractions(httpExchange);
         } catch (Exception e) {
             sendNotFound(httpExchange, "Error");
         }
