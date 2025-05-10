@@ -50,7 +50,7 @@ public class TaskHttpHandler extends BaseHttpHandler {
                 if (id > 0) {
                     manager.updateTask(task);
                     System.out.println("Задание с айди " + id + " обновлено");
-                    exchange.sendResponseHeaders(200, 0);
+                    exchange.sendResponseHeaders(201, 0);
                 } else {
                     try {
                         int newId = manager.createTask(task).getId();
@@ -68,7 +68,7 @@ public class TaskHttpHandler extends BaseHttpHandler {
                 if (requestedId == null) {
                     manager.deleteAllTasks();
                     System.out.println("Все задания удалены");
-                    sendText(exchange, "All tasks deleted");
+                    exchange.sendResponseHeaders(201, 0);
                     return;
                 }
 
@@ -76,12 +76,12 @@ public class TaskHttpHandler extends BaseHttpHandler {
                 if (task != null) {
                     manager.deleteTask(requestedId);
                     System.out.println("Задание с айди" + requestedId + " удалено");
-                    sendText(exchange, "Task deleted");
+                    exchange.sendResponseHeaders(201, 0);
                 }
                 break;
             }
             default: {
-                 sendNotFound(exchange, "Not Found");
+                 sendNotFound(exchange);
             }
         }
     }

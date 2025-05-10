@@ -53,16 +53,24 @@ public class BaseHttpHandler implements HttpHandler {
         }
     }
 
-    protected void sendNotFound(HttpExchange exchange, String text) throws IOException {
-        byte[] response = text.getBytes(StandardCharsets.UTF_8);
+    protected void sendNotFound(HttpExchange exchange) throws IOException {
+        byte[] response = "Not Found".getBytes(StandardCharsets.UTF_8);
         exchange.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
         exchange.sendResponseHeaders(404, response.length);
         exchange.getResponseBody().write(response);
         exchange.close();
     }
 
+    protected void sendServerError(HttpExchange exchange) throws IOException {
+        byte[] response = "Internal Server Error".getBytes(StandardCharsets.UTF_8);
+        exchange.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
+        exchange.sendResponseHeaders(500, response.length);
+        exchange.getResponseBody().write(response);
+        exchange.close();
+    }
+
     protected void sendHasInteractions(HttpExchange exchange) throws IOException {
-        byte[] response = "Задание пересекается с существующими".getBytes(StandardCharsets.UTF_8);
+        byte[] response = "Not Acceptable".getBytes(StandardCharsets.UTF_8);
         exchange.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
         exchange.sendResponseHeaders(406, response.length);
         exchange.getResponseBody().write(response);
