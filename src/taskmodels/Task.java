@@ -32,6 +32,20 @@ public class Task {
         this.duration = Duration.ofMinutes(Integer.parseInt(duration));
     }
 
+    public Task(Map<String, String> map, Integer id) {
+        if (id == null) this.id = 0;
+        this.name = map.get("name");
+        this.details = map.get("details");
+        this.status = TaskStatus.valueOf(map.get("status"));
+        String startTimeString = map.get("start-time");
+        String endTimeString = map.get("end-time");
+        if (startTimeString != null && endTimeString != null) {
+            this.startTime = LocalDateTime.parse(startTimeString);
+            LocalDateTime newEndTime = LocalDateTime.parse(endTimeString);
+            this.duration = Duration.between(this.startTime, newEndTime);
+        }
+    }
+
     public String getName() {
         return name;
     }
@@ -113,28 +127,6 @@ public class Task {
                 + getDetails() + "," + getStartTime().format(formatter) + "," + getEndTime().format(formatter);
         else line = getId() + "," + getType() + "," + getName() + "," + getStatus() + "," + getDetails() + ",-,-";
         return line;
-    }
-
-    public Task taskOfMap(Map<String, String> map, Integer newId) {
-        Task newTask;
-        if (newId == null) newId = 0;
-        String newName = map.get("name");
-        String newDetails = map.get("details");
-        TaskStatus newStatus = TaskStatus.valueOf(map.get("status"));
-        String startTimeString = map.get("start-time");
-        String endTimeString = map.get("end-time");
-        Duration newDuration;
-        if (startTimeString != null && endTimeString != null) {
-            LocalDateTime newStartTime = LocalDateTime.parse(startTimeString);
-            LocalDateTime newEndTime = LocalDateTime.parse(endTimeString);
-            newDuration = Duration.between(newStartTime, newEndTime);
-            String durationString = newDuration.toString();
-            newTask = new Task(newId, newName, newDetails, startTimeString, durationString);
-        } else {
-            newTask = new Task(newId, newName, newDetails);
-        }
-        newTask.setStatus(newStatus);
-        return newTask;
     }
 
     @Override
