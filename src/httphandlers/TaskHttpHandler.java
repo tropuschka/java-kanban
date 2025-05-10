@@ -1,12 +1,15 @@
 package httphandlers;
 
+import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
+import exceptions.TaskValidationException;
 import managing.TaskManager;
 import taskmodels.Task;
 
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -17,66 +20,69 @@ public class TaskHttpHandler extends BaseHttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        URI request = exchange.getRequestURI();
-        String method = exchange.getRequestMethod();
-        String url = request.toString();
-        int questionIndex = url.indexOf("?");
-        String cutRequest;
-        String parameterString = null;
-        if (questionIndex != -1) {
-            cutRequest = url.substring(0, questionIndex);
-            parameterString = url.substring(questionIndex + 1);
-        } else cutRequest = url;
-        String[] requestArray = cutRequest.split("/");
-        Task task;
+        final String path = exchange.getRequestURI().getPath();
+        final Integer requestedId = getIdFromPath(path);
 
-        switch (method) {
-            case "POST":
-                if (requestArray[1].equals("task") && requestArray.length == 2) {
-                    task = newTask(parameterString, "task");
-                    manager.createTask(task);
-                    if (manager.findTaskById(task.getId()) == null) sendHasInteractions(exchange, "Not Acceptable");
-                    sendText(exchange, "Task \"" + task.getName() + "\" created");
-                } else if (requestArray[1].equals("task") && requestArray.length == 3 && isNumber(requestArray[2])) {
-                    int taskId = Integer.parseInt(requestArray[2]);
-                    task = newTask(parameterString, "task", taskId);
-                    Task oldTask = manager.findTaskById(taskId);
-                    if (oldTask == null) sendNotFound(exchange, "Not Found");
+        Gson gson = new Gson();
+
+        switch (exchange.getRequestMethod()) {
+            case "GET": {
+                if (requestedId == null) {
+                    final List<Task> tasks = manager.getAllTasks();
+                    final String response = gson.toJson(tasks);
+                    System.out.println("Все задания получены");
+                    sendText(exchange, response);
+                    return;
+                }
+
+                final Task task = manager.findTaskById(requestedId);
+                if (task != null) {
+                    final String response = gson.toJson(task);
+                    System.out.println("Задание с айди " + requestedId + " получено");
+                    sendText(exchange, response);
+                }
+                break;
+            }
+            case "POST": {
+                String json = readText(exchange, requestedId);
+                final Task task = gson.fromJson(json, Task.class);
+                final Integer id = task.getId();
+                if (id > 0) {
                     manager.updateTask(task);
-                    if (Objects.equals(oldTask, manager.findTaskById(taskId)) || manager.findTaskById(taskId) == null) {
-                        sendHasInteractions(exchange, "Not Acceptable");
+                    System.out.println("Задание с айди " + id + " обновлено");
+                    exchange.sendResponseHeaders(200, 0);
+                } else {
+                    try {
+                        int newId = manager.createTask(task).getId();
+                        System.out.println("Задание с айди " + newId + " создано");
+                        final String response = gson.toJson(task);
+                        sendText(exchange, response);
+                    } catch (TaskValidationException e) {
+                        System.out.println("Задача пересекается с существующими");
+                        sendHasInteractions(exchange);
                     }
-                    sendText(exchange, "Task \"" + task.getName() + "\" updated");
-                } else sendNotFound(exchange, "Not Found");
+                }
                 break;
-            case "GET":
-                if (requestArray[1].equals("task") && requestArray.length == 2) {
-                    ArrayList<Task> allTasksArray = manager.getAllTasks();
-                    if (allTasksArray.isEmpty()) sendNotFound(exchange, "Not Found");
-                    String response = allTasksArray.stream().map(Task::toString).collect(Collectors.joining("\n"));
-                    sendText(exchange, response);
-                } else if (requestArray[1].equals("task") && requestArray.length == 3 && isNumber(requestArray[2])) {
-                    int taskId = Integer.parseInt(requestArray[2]);
-                    task = manager.findTaskById(taskId);
-                    if (task == null) sendNotFound(exchange, "Not found");
-                    String response = task.toString();
-                    sendText(exchange, response);
-                } else sendNotFound(exchange, "Not Found");
-                break;
-            case "DELETE":
-                if (requestArray[1].equals("task") && requestArray.length == 2) {
+            }
+            case "DELETE":{
+                if (requestedId == null) {
                     manager.deleteAllTasks();
+                    System.out.println("Все задания удалены");
                     sendText(exchange, "All tasks deleted");
-                } else if (requestArray[1].equals("task") && requestArray.length == 3 && isNumber(requestArray[2])) {
-                    int taskId = Integer.parseInt(requestArray[2]);
-                    if (manager.findTaskById(taskId) == null) sendNotFound(exchange, "Not Found");
-                    String taskName = manager.findTaskById(taskId).getName();
-                    manager.deleteTask(taskId);
-                    sendText(exchange, "Task \"" + taskName + "\" deleted");
-                } else sendNotFound(exchange, "Not Found");
+                    return;
+                }
+
+                final Task task = manager.findTaskById(requestedId);
+                if (task != null) {
+                    manager.deleteTask(requestedId);
+                    System.out.println("Задание с айди" + requestedId + " удалено");
+                    sendText(exchange, "Task deleted");
+                }
                 break;
-            default:
-                sendNotFound(exchange, "Not Found");
+            }
+            default: {
+                 sendNotFound(exchange, "Not Found");
+            }
         }
     }
 }
