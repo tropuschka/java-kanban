@@ -44,6 +44,7 @@ public class BaseHttpHandler implements HttpHandler {
 
             sendHasInteractions(httpExchange);
         } catch (Exception e) {
+            System.out.println("Miss");
             sendNotFound(httpExchange);
         }
     }
