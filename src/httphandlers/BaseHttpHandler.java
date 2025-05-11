@@ -13,20 +13,20 @@ import typeadapter.DurationTypeAdapter;
 import typeadapter.FormatterTypeAdapter;
 import typeadapter.LocalDateTypeAdapter;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 public class BaseHttpHandler implements HttpHandler {
     protected TaskManager manager;
-    protected DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+    protected DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyyVVHH:mm");
 
     public BaseHttpHandler() {
         super();
@@ -49,7 +49,7 @@ public class BaseHttpHandler implements HttpHandler {
         }
     }
 
-    protected void sendText(HttpExchange exchange, String text) throws IOException { // Коды должны быть разными
+    protected void sendText(HttpExchange exchange, String text) throws IOException {
         byte[] response = text.getBytes(StandardCharsets.UTF_8);
         Headers headers = exchange.getResponseHeaders();
         headers.set("Content-Type", "application/json;charset=utf-8");
@@ -97,17 +97,29 @@ public class BaseHttpHandler implements HttpHandler {
 
     protected Integer getIdFromPath(String path) {
         String[] pathArray = path.split("/");
-        Optional<Integer> optId = Optional.of(Integer.parseInt(pathArray[3]));
-        return optId.get();
+        if (pathArray.length == 3) {
+            Optional<Integer> optId = Optional.of(Integer.parseInt(pathArray[3]));
+            return optId.get();
+        } else {
+            return 0;
+        }
     }
 
-    protected String readText(HttpExchange exchange) {
+    protected String readText(HttpExchange exchange) throws IOException {
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTypeAdapter())
                 .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
                 .registerTypeAdapter(DateTimeFormatter.class, new FormatterTypeAdapter())
                 .create();
-        return gson.toJson(exchange.getRequestBody());
+        BufferedReader reader = new BufferedReader(new InputStreamReader(exchange.getRequestBody()));
+        StringBuilder builder = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            builder.append(line).append("\n");
+        }
+        reader.close();
+
+        return builder.toString();
     }
 
 /*        protected String readText(HttpExchange exchange, Integer id) throws IOException {

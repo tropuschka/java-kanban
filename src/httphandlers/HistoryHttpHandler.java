@@ -12,6 +12,7 @@ import typeadapter.LocalDateTypeAdapter;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ public class HistoryHttpHandler  extends BaseHttpHandler {
         try {
             String method = exchange.getRequestMethod();
             Gson gson = new GsonBuilder()
-                    .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
+                    .registerTypeAdapter(LocalDateTime.class, new LocalDateTypeAdapter())
                     .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
                     .registerTypeAdapter(DateTimeFormatter.class, new FormatterTypeAdapter())
                     .create();

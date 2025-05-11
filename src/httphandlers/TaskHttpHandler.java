@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class TaskHttpHandler extends BaseHttpHandler {
             final Integer requestedId = getIdFromPath(path);
 
             Gson gson = new GsonBuilder()
-                    .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
+                    .registerTypeAdapter(LocalDateTime.class, new LocalDateTypeAdapter())
                     .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
                     .registerTypeAdapter(DateTimeFormatter.class, new FormatterTypeAdapter())
                     .create();
