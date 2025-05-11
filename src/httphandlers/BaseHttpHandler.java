@@ -97,8 +97,8 @@ public class BaseHttpHandler implements HttpHandler {
 
     protected Integer getIdFromPath(String path) {
         String[] pathArray = path.split("/");
-        if (pathArray.length == 3) {
-            Optional<Integer> optId = Optional.of(Integer.parseInt(pathArray[3]));
+        if (pathArray.length >= 4) {
+            Optional<Integer> optId = Optional.of(Integer.parseInt(pathArray[pathArray.length - 1]));
             return optId.get();
         } else {
             return 0;
@@ -121,38 +121,4 @@ public class BaseHttpHandler implements HttpHandler {
 
         return builder.toString();
     }
-
-/*        protected String readText(HttpExchange exchange, Integer id) throws IOException {
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
-                .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
-                .registerTypeAdapter(DateTimeFormatter.class, new FormatterTypeAdapter())
-                .create();
-        String query = exchange.getRequestURI().getQuery();
-        Map<String, String> queryMap = new HashMap<>();
-        for (String param : query.split("&")) {
-            int equalIndex = param.indexOf("=");
-            queryMap.put(param.substring(0, equalIndex), param.substring(equalIndex + 1));
-        }
-        if (queryMap.get("epic-id") != null && !isNumber(queryMap.get("epic-id"))) {
-            System.out.println("Not Acceptable Epic Id");
-            sendHasInteractions(exchange);
-            return null;
-        }
-        String type = exchange.getRequestURI().getPath().split("/")[1];
-        switch (type) {
-            case "epic": {
-                Epic task = new Epic(queryMap, id);
-                return gson.toJson(task);
-            }
-            case "subtask": {
-                Subtask task = new Subtask(queryMap, id);
-                return gson.toJson(task);
-            }
-            default: {
-                Task task = new Task(queryMap, id);
-                return gson.toJson(task);
-            }
-        }
-    } */
 }

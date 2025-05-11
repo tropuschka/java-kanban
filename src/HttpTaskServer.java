@@ -5,6 +5,7 @@ import managing.TaskManager;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.ServerSocket;
 
 public class HttpTaskServer {
     private static HttpServer server;
@@ -12,6 +13,8 @@ public class HttpTaskServer {
 
     public HttpTaskServer(TaskManager manager) throws IOException {
     this.manager = manager;
+    ServerSocket serverSocket = new ServerSocket();
+        serverSocket.setReuseAddress(true);
     server = HttpServer.create(new InetSocketAddress(8080), 0);
         server.createContext("/", new BaseHttpHandler());
         server.createContext("/task", new TaskHttpHandler(manager));
@@ -26,6 +29,7 @@ public class HttpTaskServer {
         server = HttpServer.create(new InetSocketAddress(8080), 0);
         manager = Managers.createTaskManager();
         start();
+        stop();
     }
 
     public static void start() {

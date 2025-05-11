@@ -38,10 +38,10 @@ public class HttpTaskServerTest {
 
     @BeforeEach
     public void setUp() {
+        httpServer.start();
         manager.deleteAllSubtasks();
         manager.deleteAllEpics();
         manager.deleteAllTasks();
-        httpServer.start();
     }
 
     @AfterEach
@@ -90,8 +90,8 @@ public class HttpTaskServerTest {
     @Test
     public void createSubtask() throws IOException, InterruptedException {
         Epic epic = new Epic(0, "Task", "Description");
-        manager.createEpic(epic);
-        Subtask task = new Subtask(0, "Task", "Description", 1);
+        Epic managerEpic = manager.createEpic(epic);
+        Subtask task = new Subtask(0, "Task", "Description", managerEpic.getId());
         String jTask = gson.toJson(task);
 
         HttpClient client = HttpClient.newHttpClient();
@@ -106,5 +106,73 @@ public class HttpTaskServerTest {
         assertNotNull(managerTask, "Tasks are not back");
         assertEquals(1, managerTask.size(), "Incorrect number of tasks");
         assertEquals("Task", managerTask.getFirst().getName(), "Incorrect task name");
+    }
+
+    @Test
+    public void updateTask() throws IOException, InterruptedException {
+        Task task2 = new Task(0, "Task", "Description");
+        Task updatingTask = manager.createTask(task2);
+        int id = updatingTask.getId();
+        Task task = new Task(id, "Task1", "Description");
+        String jTask = gson.toJson(task);
+
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/task/" + id);
+        HttpRequest request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(jTask)).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(201, response.statusCode());
+
+        List<Task> managerTask = manager.getAllTasks();
+
+        assertNotNull(managerTask, "Tasks are not back");
+        assertEquals(1, managerTask.size(), "Incorrect number of tasks");
+        assertEquals("Task1", managerTask.getFirst().getName(), "Incorrect task name");
+    }
+
+    @Test
+    public void updateEpic() throws IOException, InterruptedException {
+        Epic task2 = new Epic(0, "Task", "Description");
+        Epic updatingTask = manager.createEpic(task2);
+        int id = updatingTask.getId();
+        Epic task = new Epic(id, "Task1", "Description");
+        String jTask = gson.toJson(task);
+
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/epic/" + id);
+        HttpRequest request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(jTask)).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(201, response.statusCode());
+
+        List<Epic> managerTask = manager.getAllEpic();
+
+        assertNotNull(managerTask, "Tasks are not back");
+        assertEquals(1, managerTask.size(), "Incorrect number of tasks");
+        assertEquals("Task1", managerTask.getFirst().getName(), "Incorrect task name");
+    }
+
+    @Test
+    public void updateSubtask() throws IOException, InterruptedException {
+        Epic epic = new Epic(0, "Task", "Description");
+        Epic managerEpic = manager.createEpic(epic);
+        Subtask task2 = new Subtask(0, "Task", "Description", managerEpic.getId());
+        Subtask managerSub = manager.createSubtask(task2);
+        int id = managerSub.getId();
+        Subtask task = new Subtask(id, "Task1", "Description", managerEpic.getId());
+        String jTask = gson.toJson(task);
+
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/subtask/" + id);
+        HttpRequest request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(jTask)).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(201, response.statusCode());
+
+        List<Subtask> managerTask = manager.getAllSubtasks();
+
+        assertNotNull(managerTask, "Tasks are not back");
+        assertEquals(1, managerTask.size(), "Incorrect number of tasks");
+        assertEquals("Task1", managerTask.getFirst().getName(), "Incorrect task name");
     }
 }
