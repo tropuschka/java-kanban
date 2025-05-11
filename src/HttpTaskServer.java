@@ -24,14 +24,14 @@ public class HttpTaskServer {
         server.createContext("/priority", new PriorityHttpHandler(manager));
     }
 
-
-    public static void main(String[] args) throws Exception {
-        server = HttpServer.create(new InetSocketAddress(8080), 0);
-        manager = Managers.createTaskManager();
-        start();
-        stop();
-    }
-
+    /*
+        public static void main(String[] args) throws Exception {
+            server = HttpServer.create(new InetSocketAddress(8080), 0);
+            manager = Managers.createTaskManager();
+            start();
+            stop();
+        }
+    */
     public static void start() {
         server.start();
     }
