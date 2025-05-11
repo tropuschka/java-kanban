@@ -56,7 +56,7 @@ public class TaskHttpHandler extends BaseHttpHandler {
                     break;
                 }
                 case "POST": {
-                    String json = readText(exchange, requestedId);
+                    String json = readText(exchange);
                     final Task task = gson.fromJson(json, Task.class);
                     final Integer id = task.getId();
                     if (id > 0) {

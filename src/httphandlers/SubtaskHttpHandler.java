@@ -56,7 +56,7 @@ public class SubtaskHttpHandler  extends BaseHttpHandler {
                     break;
                 }
                 case "POST": {
-                    String json = readText(exchange, requestedId);
+                    String json = readText(exchange);
                     final Subtask task = gson.fromJson(json, Subtask.class);
                     final Integer id = task.getId();
                     if (id > 0) {

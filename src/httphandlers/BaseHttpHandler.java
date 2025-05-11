@@ -100,7 +100,16 @@ public class BaseHttpHandler implements HttpHandler {
         return optId.get();
     }
 
-    protected String readText(HttpExchange exchange, Integer id) throws IOException {
+    protected String readText(HttpExchange exchange) {
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
+                .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
+                .registerTypeAdapter(DateTimeFormatter.class, new FormatterTypeAdapter())
+                .create();
+        return gson.toJson(exchange.getRequestBody());
+    }
+
+/*        protected String readText(HttpExchange exchange, Integer id) throws IOException {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
                 .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
@@ -132,5 +141,5 @@ public class BaseHttpHandler implements HttpHandler {
                 return gson.toJson(task);
             }
         }
-    }
+    } */
 }

@@ -55,7 +55,7 @@ public class EpicHttpHandler  extends BaseHttpHandler {
                     break;
                 }
                 case "POST": {
-                    String json = readText(exchange, requestedId);
+                    String json = readText(exchange);
                     final Epic task = gson.fromJson(json, Epic.class);
                     final Integer id = task.getId();
                     if (id > 0) {
