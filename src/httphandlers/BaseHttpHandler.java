@@ -10,6 +10,7 @@ import taskmodels.Epic;
 import taskmodels.Subtask;
 import taskmodels.Task;
 import typeadapter.DurationTypeAdapter;
+import typeadapter.FormatterTypeAdapter;
 import typeadapter.LocalDateTypeAdapter;
 
 import java.io.IOException;
@@ -103,6 +104,7 @@ public class BaseHttpHandler implements HttpHandler {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
                 .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
+                .registerTypeAdapter(DateTimeFormatter.class, new FormatterTypeAdapter())
                 .create();
         String query = exchange.getRequestURI().getQuery();
         Map<String, String> queryMap = new HashMap<>();

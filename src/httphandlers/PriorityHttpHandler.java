@@ -6,11 +6,13 @@ import com.sun.net.httpserver.HttpExchange;
 import managing.TaskManager;
 import taskmodels.Task;
 import typeadapter.DurationTypeAdapter;
+import typeadapter.FormatterTypeAdapter;
 import typeadapter.LocalDateTypeAdapter;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +29,7 @@ public class PriorityHttpHandler  extends BaseHttpHandler {
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
                     .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
+                    .registerTypeAdapter(DateTimeFormatter.class, new FormatterTypeAdapter())
                     .create();
 
             switch (method) {

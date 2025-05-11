@@ -11,7 +11,7 @@ public class Task {
     private String details;
     private Integer id;
     private TaskStatus status;
-    protected LocalDateTime startTime;
+    public LocalDateTime startTime;
     public Duration duration;
     protected DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 

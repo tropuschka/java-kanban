@@ -7,12 +7,14 @@ import exceptions.TaskValidationException;
 import managing.TaskManager;
 import taskmodels.Epic;
 import typeadapter.DurationTypeAdapter;
+import typeadapter.FormatterTypeAdapter;
 import typeadapter.LocalDateTypeAdapter;
 
 import java.io.IOException;
 import java.net.URI;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -31,6 +33,7 @@ public class EpicHttpHandler  extends BaseHttpHandler {
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
                     .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
+                    .registerTypeAdapter(DateTimeFormatter.class, new FormatterTypeAdapter())
                     .create();
 
             switch (exchange.getRequestMethod()) {
