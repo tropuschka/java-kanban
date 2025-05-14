@@ -97,8 +97,10 @@ public class BaseHttpHandler implements HttpHandler {
 
     protected Integer getIdFromPath(String path) {
         String[] pathArray = path.split("/");
-        if (pathArray.length >= 4) {
-            Optional<Integer> optId = Optional.of(Integer.parseInt(pathArray[pathArray.length - 1]));
+        System.out.println(Arrays.toString(pathArray));
+        if (pathArray.length >= 3) {
+            Optional<Integer> optId = Optional.of(Integer.parseInt(pathArray[2]));
+            System.out.println(optId.get());
             return optId.get();
         } else {
             return 0;

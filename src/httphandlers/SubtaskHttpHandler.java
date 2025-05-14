@@ -53,6 +53,8 @@ public class SubtaskHttpHandler  extends BaseHttpHandler {
                         final String response = gson.toJson(task);
                         System.out.println("Подзадача с айди " + requestedId + " получена");
                         sendText(exchange, response);
+                    } else {
+                        sendNotFound(exchange);
                     }
                     break;
                 }

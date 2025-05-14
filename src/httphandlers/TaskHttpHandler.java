@@ -53,6 +53,8 @@ public class TaskHttpHandler extends BaseHttpHandler {
                         final String response = gson.toJson(task);
                         System.out.println("Задача с айди " + requestedId + " получена");
                         sendText(exchange, response);
+                    } else {
+                        sendNotFound(exchange);
                     }
                     break;
                 }

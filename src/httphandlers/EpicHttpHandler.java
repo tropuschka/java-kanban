@@ -52,6 +52,8 @@ public class EpicHttpHandler  extends BaseHttpHandler {
                         final String response = gson.toJson(task);
                         System.out.println("Эпик с айди " + requestedId + " получен");
                         sendText(exchange, response);
+                    } else {
+                        sendNotFound(exchange);
                     }
                     break;
                 }
