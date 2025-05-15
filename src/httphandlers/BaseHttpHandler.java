@@ -6,9 +6,6 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import managing.TaskManager;
-import taskmodels.Epic;
-import taskmodels.Subtask;
-import taskmodels.Task;
 import typeadapter.DurationTypeAdapter;
 import typeadapter.FormatterTypeAdapter;
 import typeadapter.LocalDateTypeAdapter;
@@ -16,12 +13,9 @@ import typeadapter.LocalDateTypeAdapter;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 public class BaseHttpHandler implements HttpHandler {
@@ -57,6 +51,13 @@ public class BaseHttpHandler implements HttpHandler {
         try (OutputStream os = exchange.getResponseBody()) {
             os.write(response);
         }
+    }
+
+    protected void sendSuccess(HttpExchange exchange) throws IOException {
+        Headers headers = exchange.getResponseHeaders();
+        headers.set("Content-Type", "application/json;charset=utf-8");
+        exchange.sendResponseHeaders(201, 0);
+        exchange.close();
     }
 
     protected void sendNotFound(HttpExchange exchange) throws IOException {
@@ -97,10 +98,8 @@ public class BaseHttpHandler implements HttpHandler {
 
     protected Integer getIdFromPath(String path) {
         String[] pathArray = path.split("/");
-        System.out.println(Arrays.toString(pathArray));
         if (pathArray.length >= 3) {
             Optional<Integer> optId = Optional.of(Integer.parseInt(pathArray[2]));
-            System.out.println(optId.get());
             return optId.get();
         } else {
             return 0;

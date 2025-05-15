@@ -11,15 +11,10 @@ import typeadapter.FormatterTypeAdapter;
 import typeadapter.LocalDateTypeAdapter;
 
 import java.io.IOException;
-import java.net.URI;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class EpicHttpHandler  extends BaseHttpHandler {
     public EpicHttpHandler(TaskManager manager) {
@@ -39,7 +34,7 @@ public class EpicHttpHandler  extends BaseHttpHandler {
 
             switch (exchange.getRequestMethod()) {
                 case "GET": {
-                    if (requestedId == null) {
+                    if (requestedId == 0 || requestedId == null) {
                         final List<Epic> tasks = manager.getAllEpic();
                         final String response = gson.toJson(tasks);
                         System.out.println("Все эпики получены");
@@ -64,7 +59,7 @@ public class EpicHttpHandler  extends BaseHttpHandler {
                     if (id > 0) {
                         manager.updateEpic(task);
                         System.out.println("Эпик с айди " + id + " обновлен");
-                        exchange.sendResponseHeaders(201, 0);
+                        sendSuccess(exchange);
                     } else {
                         try {
                             int newId = manager.createEpic(task).getId();
@@ -82,7 +77,7 @@ public class EpicHttpHandler  extends BaseHttpHandler {
                     if (requestedId == null) {
                         manager.deleteAllEpics();
                         System.out.println("Все эпики удалены");
-                        exchange.sendResponseHeaders(201, 0);
+                        sendSuccess(exchange);
                         return;
                     }
 
@@ -90,7 +85,7 @@ public class EpicHttpHandler  extends BaseHttpHandler {
                     if (task != null) {
                         manager.deleteEpic(requestedId);
                         System.out.println("Эпик с айди" + requestedId + " удален");
-                        exchange.sendResponseHeaders(201, 0);
+                        sendSuccess(exchange);
                     }
                     break;
                 }

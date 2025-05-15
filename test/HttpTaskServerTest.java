@@ -14,9 +14,9 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,11 +33,12 @@ public class HttpTaskServerTest {
     @BeforeAll
     public static void startAndRunServer() throws IOException {
         httpServer = new HttpTaskServer(manager);
+        httpServer.start();
+        System.out.println("Server run");
     }
 
     @BeforeEach
     public void setUp() {
-        httpServer.start();
         manager.deleteAllSubtasks();
         manager.deleteAllEpics();
         manager.deleteAllTasks();
@@ -45,7 +46,6 @@ public class HttpTaskServerTest {
 
     @AfterEach
     public void stopServer() {
-        httpServer.stop();
     }
 
     @Test
@@ -160,7 +160,6 @@ public class HttpTaskServerTest {
         int id = managerSub.getId();
         Subtask task = new Subtask(id, "Task1", "Description", managerEpic.getId());
         String jTask = gson.toJson(task);
-
         HttpClient client = HttpClient.newHttpClient();
         URI url = URI.create("http://localhost:8080/subtask/" + id);
         HttpRequest request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(jTask)).build();
@@ -232,6 +231,99 @@ public class HttpTaskServerTest {
 
         assertNotNull(managerTask, "Tasks are not back");
         assertEquals(1, managerTask.size(), "Incorrect number of tasks");
+        assertEquals("Task", managerTask.getFirst().getName(), "Incorrect task name");
+    }
+
+    @Test
+    public void getTaskAll() throws IOException, InterruptedException {
+        Task task = new Task(0, "Task", "Description");
+        Task task2 = new Task(0, "Task", "Description");
+        manager.createTask(task);
+        manager.createTask(task2);
+
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/task");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode());
+
+        List<Task> managerTask = manager.getAllTasks();
+        JsonElement jElement = JsonParser.parseString(response.body());
+        JsonArray jArray = jElement.getAsJsonArray();
+        List<Task> taskList = new ArrayList<>();
+        for (int i = 0; i < jArray.size(); i++) {
+            JsonElement element = jArray.get(i);
+            Task gotTask = gson.fromJson(element, Task.class);
+            taskList.add(gotTask);
+        }
+        assertEquals(managerTask, taskList);
+
+
+        assertNotNull(managerTask, "Tasks are not back");
+        assertEquals(2, managerTask.size(), "Incorrect number of tasks");
+        assertEquals("Task", managerTask.getFirst().getName(), "Incorrect task name");
+    }
+
+    @Test
+    public void getEpicAll() throws IOException, InterruptedException {
+        Epic task = new Epic(0, "Task", "Description");
+        Epic task2 = new Epic(0, "Task", "Description");
+        manager.createEpic(task);
+        manager.createEpic(task2);
+
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/epic");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode());
+
+        List<Epic> managerTask = manager.getAllEpic();
+        JsonElement jElement = JsonParser.parseString(response.body());
+        JsonArray jArray = jElement.getAsJsonArray();
+        List<Epic> taskList = new ArrayList<>();
+        for (int i = 0; i < jArray.size(); i++) {
+            JsonElement element = jArray.get(i);
+            Epic gotTask = gson.fromJson(element, Epic.class);
+            taskList.add(gotTask);
+        }
+        assertEquals(managerTask, taskList);
+
+        assertNotNull(managerTask, "Tasks are not back");
+        assertEquals(2, managerTask.size(), "Incorrect number of tasks");
+        assertEquals("Task", managerTask.getFirst().getName(), "Incorrect task name");
+    }
+
+    @Test
+    public void getSubtaskAll() throws IOException, InterruptedException {
+        Epic epic = new Epic(0, "Task", "Description");
+        Epic managerEpic = manager.createEpic(epic);
+        Subtask task = new Subtask(0, "Task", "Description", managerEpic.getId());
+        Subtask task2 = new Subtask(0, "Task", "Description", managerEpic.getId());
+        manager.createSubtask(task);
+        manager.createSubtask(task2);
+
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/subtask");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode());
+
+
+        List<Subtask> managerTask = manager.getAllSubtasks();
+        JsonElement jElement = JsonParser.parseString(response.body());
+        JsonArray jArray = jElement.getAsJsonArray();
+        List<Subtask> taskList = new ArrayList<>();
+        for (int i = 0; i < jArray.size(); i++) {
+            JsonElement element = jArray.get(i);
+            Subtask gotTask = gson.fromJson(element, Subtask.class);
+            taskList.add(gotTask);
+        }
+
+        assertNotNull(managerTask, "Tasks are not back");
+        assertEquals(2, managerTask.size(), "Incorrect number of tasks");
         assertEquals("Task", managerTask.getFirst().getName(), "Incorrect task name");
     }
 }

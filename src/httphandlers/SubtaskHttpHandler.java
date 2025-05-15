@@ -11,15 +11,10 @@ import typeadapter.FormatterTypeAdapter;
 import typeadapter.LocalDateTypeAdapter;
 
 import java.io.IOException;
-import java.net.URI;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class SubtaskHttpHandler  extends BaseHttpHandler {
     public SubtaskHttpHandler(TaskManager manager) {
@@ -40,7 +35,7 @@ public class SubtaskHttpHandler  extends BaseHttpHandler {
 
             switch (exchange.getRequestMethod()) {
                 case "GET": {
-                    if (requestedId == null) {
+                    if (requestedId == 0 || requestedId == null) {
                         final List<Subtask> tasks = manager.getAllSubtasks();
                         final String response = gson.toJson(tasks);
                         System.out.println("Все подзадачи получены");
@@ -65,7 +60,7 @@ public class SubtaskHttpHandler  extends BaseHttpHandler {
                     if (id > 0) {
                         manager.updateSubtask(task);
                         System.out.println("Подзадача с айди " + id + " обновлена");
-                        exchange.sendResponseHeaders(201, 0);
+                        sendSuccess(exchange);
                     } else {
                         try {
                             int newId = manager.createSubtask(task).getId();
@@ -83,7 +78,7 @@ public class SubtaskHttpHandler  extends BaseHttpHandler {
                     if (requestedId == null) {
                         manager.deleteAllSubtasks();
                         System.out.println("Все подзадачи удалены");
-                        exchange.sendResponseHeaders(201, 0);
+                        sendSuccess(exchange);
                         return;
                     }
 
@@ -91,7 +86,7 @@ public class SubtaskHttpHandler  extends BaseHttpHandler {
                     if (task != null) {
                         manager.deleteSubtask(task);
                         System.out.println("Подзадача с айди" + requestedId + " удалена");
-                        exchange.sendResponseHeaders(201, 0);
+                        sendSuccess(exchange);
                     }
                     break;
                 }
