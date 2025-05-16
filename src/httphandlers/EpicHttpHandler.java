@@ -62,7 +62,7 @@ public class EpicHttpHandler  extends BaseHttpHandler {
                         sendSuccess(exchange);
                     } else {
                             int newId = manager.createEpic(task).getId();
-                            if (manager.findSubtaskById(newId) != null) {
+                            if (manager.findEpicById(newId) != null) {
                             System.out.println("Эпик с айди " + newId + " создан");
                             final String response = gson.toJson(task);
                             sendText(exchange, response);
