@@ -62,12 +62,12 @@ public class SubtaskHttpHandler  extends BaseHttpHandler {
                         System.out.println("Подзадача с айди " + id + " обновлена");
                         sendSuccess(exchange);
                     } else {
-                        try {
                             int newId = manager.createSubtask(task).getId();
+                        if (manager.findSubtaskById(newId) != null) {
                             System.out.println("Подзадача с айди " + newId + " создана");
                             final String response = gson.toJson(task);
                             sendText(exchange, response);
-                        } catch (TaskValidationException e) {
+                        } else {
                             System.out.println("Подзадача пересекается с существующими");
                             sendHasInteractions(exchange);
                         }

@@ -61,12 +61,12 @@ public class EpicHttpHandler  extends BaseHttpHandler {
                         System.out.println("Эпик с айди " + id + " обновлен");
                         sendSuccess(exchange);
                     } else {
-                        try {
                             int newId = manager.createEpic(task).getId();
+                            if (manager.findSubtaskById(newId) != null) {
                             System.out.println("Эпик с айди " + newId + " создан");
                             final String response = gson.toJson(task);
                             sendText(exchange, response);
-                        } catch (TaskValidationException e) {
+                        } else {
                             System.out.println("Эпик пересекается с существующими");
                             sendHasInteractions(exchange);
                         }

@@ -17,6 +17,8 @@ public class DurationTypeAdapter implements JsonSerializer<Duration>, JsonDeseri
     @Override
     public Duration deserialize(final JsonElement json, final Type typeOfT,
                                      final JsonDeserializationContext context) throws JsonParseException {
-        return Duration.ofMinutes(json.getAsLong());
+        String durationString = json.getAsString();
+        String durationNumber = durationString.substring(2, durationString.length() - 1);
+        return Duration.ofMinutes(Integer.parseInt(durationNumber));
     }
 }

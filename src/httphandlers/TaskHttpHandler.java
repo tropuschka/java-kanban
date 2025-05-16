@@ -62,15 +62,17 @@ public class TaskHttpHandler extends BaseHttpHandler {
                         System.out.println("Задача с айди " + id + " обновлена");
                         sendSuccess(exchange);
                     } else {
-                        try {
                             int newId = manager.createTask(task).getId();
-                            System.out.println("Задача с айди " + newId + " создана");
-                            final String response = gson.toJson(task);
-                            sendText(exchange, response);
-                        } catch (TaskValidationException e) {
-                            System.out.println("Задача пересекается с существующими");
-                            sendHasInteractions(exchange);
-                        }
+                            if (manager.findTaskById(newId) != null) {
+                                System.out.println("Задача с айди " + newId + " создана");
+                                final String response = gson.toJson(task);
+                                sendText(exchange, response);
+                                return;
+
+                            } else {
+                                System.out.println("Задача пересекается с существующими");
+                                sendHasInteractions(exchange);
+                            }
                     }
                     break;
                 }

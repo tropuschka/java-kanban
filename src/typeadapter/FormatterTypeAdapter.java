@@ -18,6 +18,6 @@ public class FormatterTypeAdapter implements JsonSerializer<DateTimeFormatter>, 
     public DateTimeFormatter deserialize(final JsonElement json, final Type typeOfT,
                                      final JsonDeserializationContext context) throws JsonParseException {
         // Да, это костыль
-        return DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     }
 }

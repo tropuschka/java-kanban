@@ -326,4 +326,48 @@ public class HttpTaskServerTest {
         assertEquals(2, managerTask.size(), "Incorrect number of tasks");
         assertEquals("Task", managerTask.getFirst().getName(), "Incorrect task name");
     }
+
+    @Test
+    public void createInteractingTask() throws IOException, InterruptedException {
+        Task task = new Task(0, "Task", "Description", "2025-05-16 09:00", "PT15M");
+        Task task2 = new Task(0, "Task", "Description", "2025-05-16 09:05", "PT15M");
+        manager.createTask(task);
+        String jTask = gson.toJson(task2);
+
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/task");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(jTask)).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(406, response.statusCode());
+
+        List<Task> managerTask = manager.getAllTasks();
+
+        assertNotNull(managerTask, "Tasks are not back");
+        assertEquals(1, managerTask.size(), "Incorrect number of tasks");
+        assertEquals("Task", managerTask.getFirst().getName(), "Incorrect task name");
+    }
+
+    @Test
+    public void createInteractingSubtask() throws IOException, InterruptedException {
+        Epic epic = new Epic(0, "Task", "Description");
+        Epic managerEpic = manager.createEpic(epic);
+        Subtask task = new Subtask(0, "Task", "Description", managerEpic.getId(), "2025-05-16 09:10", "PT15M");
+        Subtask task2 = new Subtask(0, "Task", "Description", managerEpic.getId(), "2025-05-16 09:00", "PT15M");
+        manager.createSubtask(task2);
+        String jTask = gson.toJson(task);
+
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/subtask");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(jTask)).build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(406, response.statusCode());
+
+        List<Subtask> managerTask = manager.getAllSubtasks();
+
+        assertNotNull(managerTask, "Tasks are not back");
+        assertEquals(1, managerTask.size(), "Incorrect number of tasks");
+        assertEquals("Task", managerTask.getFirst().getName(), "Incorrect task name");
+    }
 }

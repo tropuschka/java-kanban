@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 
 public class TaskFromString {
     public static Task fromString(String taskString) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         String[] taskList = taskString.split(",");
         Task task;
         TaskType type = TaskType.valueOf(taskList[1]);
