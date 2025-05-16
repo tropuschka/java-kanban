@@ -84,7 +84,7 @@ public class EpicHttpHandler  extends BaseHttpHandler {
                     final Epic task = manager.findEpicById(requestedId);
                     if (task != null) {
                         manager.deleteEpic(requestedId);
-                        System.out.println("Эпик с айди" + requestedId + " удален");
+                        System.out.println("Эпик с айди " + requestedId + " удален");
                         sendSuccess(exchange);
                     }
                     break;

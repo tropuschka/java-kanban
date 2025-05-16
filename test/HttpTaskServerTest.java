@@ -370,4 +370,58 @@ public class HttpTaskServerTest {
         assertEquals(1, managerTask.size(), "Incorrect number of tasks");
         assertEquals("Task", managerTask.getFirst().getName(), "Incorrect task name");
     }
+
+    @Test
+    public void deleteTask() throws IOException, InterruptedException {
+        Task task = new Task(0, "Task", "Description");
+        Task createdTask = manager.createTask(task);
+
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/task/" + createdTask.getId());
+        HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(201, response.statusCode());
+
+        List<Task> managerTask = manager.getAllTasks();
+
+        assertEquals(0, managerTask.size(), "Incorrect number of tasks");
+    }
+
+    @Test
+    public void deleteEpic() throws IOException, InterruptedException {
+        Epic task = new Epic(0, "Task", "Description");
+        Epic createdTask = manager.createEpic(task);
+
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/epic/" + createdTask.getId());
+        HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(201, response.statusCode());
+
+        List<Epic> managerTask = manager.getAllEpic();
+
+        assertEquals(0, managerTask.size(), "Incorrect number of tasks");
+    }
+
+    @Test
+    public void deleteSubtask() throws IOException, InterruptedException {
+        Epic epic = new Epic(0, "Task", "Description");
+        Epic managerEpic = manager.createEpic(epic);
+        Subtask task = new Subtask(0, "Task", "Description", managerEpic.getId());
+        Subtask createdTask = manager.createSubtask(task);
+
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/subtask/" + createdTask.getId());
+        HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(201, response.statusCode());
+
+
+        List<Subtask> managerTask = manager.getAllSubtasks();
+
+        assertEquals(0, managerTask.size(), "Incorrect number of tasks");
+    }
 }

@@ -85,7 +85,7 @@ public class SubtaskHttpHandler  extends BaseHttpHandler {
                     final Subtask task = manager.findSubtaskById(requestedId);
                     if (task != null) {
                         manager.deleteSubtask(task);
-                        System.out.println("Подзадача с айди" + requestedId + " удалена");
+                        System.out.println("Подзадача с айди " + requestedId + " удалена");
                         sendSuccess(exchange);
                     }
                     break;

@@ -87,7 +87,7 @@ public class TaskHttpHandler extends BaseHttpHandler {
                     final Task task = manager.findTaskById(requestedId);
                     if (task != null) {
                         manager.deleteTask(requestedId);
-                        System.out.println("Задача с айди" + requestedId + " удалена");
+                        System.out.println("Задача с айди " + requestedId + " удалена");
                         sendSuccess(exchange);
                     }
                     break;
