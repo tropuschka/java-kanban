@@ -3,7 +3,6 @@ package taskmodels;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -14,7 +13,7 @@ public class Task {
     private TaskStatus status;
     public LocalDateTime startTime;
     public Duration duration;
-    protected DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    protected DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     public Task(Integer id, String name, String details) {
         this.id = id;

@@ -3,7 +3,6 @@ package httphandlers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
-import exceptions.TaskValidationException;
 import managing.TaskManager;
 import taskmodels.Subtask;
 import typeadapter.DurationTypeAdapter;
@@ -62,7 +61,7 @@ public class SubtaskHttpHandler  extends BaseHttpHandler {
                         System.out.println("Подзадача с айди " + id + " обновлена");
                         sendSuccess(exchange);
                     } else {
-                            int newId = manager.createSubtask(task).getId();
+                        int newId = manager.createSubtask(task).getId();
                         if (manager.findSubtaskById(newId) != null) {
                             System.out.println("Подзадача с айди " + newId + " создана");
                             final String response = gson.toJson(task);
@@ -74,7 +73,7 @@ public class SubtaskHttpHandler  extends BaseHttpHandler {
                     }
                     break;
                 }
-                case "DELETE":{
+                case "DELETE": {
                     if (requestedId == null || requestedId == 0) {
                         manager.deleteAllSubtasks();
                         System.out.println("Все подзадачи удалены");

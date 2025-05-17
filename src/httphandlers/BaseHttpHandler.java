@@ -15,12 +15,10 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Optional;
 
 public class BaseHttpHandler implements HttpHandler {
     protected TaskManager manager;
-    protected DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyyVVHH:mm");
 
     public BaseHttpHandler() {
         super();
@@ -84,18 +82,6 @@ public class BaseHttpHandler implements HttpHandler {
         exchange.sendResponseHeaders(406, response.length);
         exchange.getResponseBody().write(response);
         exchange.close();
-    }
-
-    protected boolean isNumber(String string) {
-        if (string == null) return false;
-        else {
-            try {
-                Integer.parseInt(string);
-                return true;
-            } catch (NumberFormatException e) {
-                return false;
-            }
-        }
     }
 
     protected Integer getIdFromPath(String path) {

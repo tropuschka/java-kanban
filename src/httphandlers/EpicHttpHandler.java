@@ -3,7 +3,6 @@ package httphandlers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
-import exceptions.TaskValidationException;
 import managing.TaskManager;
 import taskmodels.Epic;
 import typeadapter.DurationTypeAdapter;
@@ -23,7 +22,8 @@ public class EpicHttpHandler  extends BaseHttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        try {final String path = exchange.getRequestURI().getPath();
+        try {
+            final String path = exchange.getRequestURI().getPath();
             final Integer requestedId = getIdFromPath(path);
 
             Gson gson = new GsonBuilder()
@@ -61,8 +61,8 @@ public class EpicHttpHandler  extends BaseHttpHandler {
                         System.out.println("Эпик с айди " + id + " обновлен");
                         sendSuccess(exchange);
                     } else {
-                            int newId = manager.createEpic(task).getId();
-                            if (manager.findEpicById(newId) != null) {
+                        int newId = manager.createEpic(task).getId();
+                        if (manager.findEpicById(newId) != null) {
                             System.out.println("Эпик с айди " + newId + " создан");
                             final String response = gson.toJson(task);
                             sendText(exchange, response);
@@ -73,7 +73,7 @@ public class EpicHttpHandler  extends BaseHttpHandler {
                     }
                     break;
                 }
-                case "DELETE":{
+                case "DELETE": {
                     if (requestedId == null || requestedId == 0) {
                         manager.deleteAllEpics();
                         System.out.println("Все эпики удалены");

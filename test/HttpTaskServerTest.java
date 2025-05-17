@@ -330,8 +330,8 @@ public class HttpTaskServerTest {
 
     @Test
     public void createInteractingTask() throws IOException, InterruptedException {
-        Task task = new Task(0, "Task", "Description", "2025-05-16 09:00", "PT15M");
-        Task task2 = new Task(0, "Task", "Description", "2025-05-16 09:05", "PT15M");
+        Task task = new Task(0, "Task", "Description", "16.05.2025 09:00", "PT15M");
+        Task task2 = new Task(0, "Task", "Description", "16.05.2025 09:05", "PT15M");
         manager.createTask(task);
         String jTask = gson.toJson(task2);
 
@@ -353,8 +353,8 @@ public class HttpTaskServerTest {
     public void createInteractingSubtask() throws IOException, InterruptedException {
         Epic epic = new Epic(0, "Task", "Description");
         Epic managerEpic = manager.createEpic(epic);
-        Subtask task = new Subtask(0, "Task", "Description", managerEpic.getId(), "2025-05-16 09:10", "PT15M");
-        Subtask task2 = new Subtask(0, "Task", "Description", managerEpic.getId(), "2025-05-16 09:00", "PT15M");
+        Subtask task = new Subtask(0, "Task", "Description", managerEpic.getId(), "16.05.2025 09:10", "PT15M");
+        Subtask task2 = new Subtask(0, "Task", "Description", managerEpic.getId(), "16.05.2025 09:00", "PT15M");
         manager.createSubtask(task2);
         String jTask = gson.toJson(task);
 
@@ -582,8 +582,8 @@ public class HttpTaskServerTest {
 
     @Test
     public void getPrioritized() throws IOException, InterruptedException {
-        Task task = new Task(0, "Task", "Description", "2025-05-16 09:00", "PT15M");
-        Task task2 = new Task(0, "Task", "Description", "2025-05-18 09:05", "PT15M");
+        Task task = new Task(0, "Task", "Description", "16.05.2025 09:00", "PT15M");
+        Task task2 = new Task(0, "Task", "Description", "18.05.2025 09:05", "PT15M");
         manager.createTask(task);
         manager.createTask(task2);
 

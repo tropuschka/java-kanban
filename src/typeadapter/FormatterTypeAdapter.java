@@ -3,7 +3,6 @@ package typeadapter;
 import com.google.gson.*;
 
 import java.lang.reflect.Type;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class FormatterTypeAdapter implements JsonSerializer<DateTimeFormatter>, JsonDeserializer<DateTimeFormatter> {
@@ -16,8 +15,8 @@ public class FormatterTypeAdapter implements JsonSerializer<DateTimeFormatter>, 
 
     @Override
     public DateTimeFormatter deserialize(final JsonElement json, final Type typeOfT,
-                                     final JsonDeserializationContext context) throws JsonParseException {
+                                         final JsonDeserializationContext context) throws JsonParseException {
         // Да, это костыль
-        return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     }
 }

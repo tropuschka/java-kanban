@@ -3,7 +3,6 @@ package httphandlers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
-import exceptions.TaskValidationException;
 import managing.TaskManager;
 import taskmodels.Task;
 import typeadapter.DurationTypeAdapter;
@@ -62,21 +61,21 @@ public class TaskHttpHandler extends BaseHttpHandler {
                         System.out.println("Задача с айди " + id + " обновлена");
                         sendSuccess(exchange);
                     } else {
-                            int newId = manager.createTask(task).getId();
-                            if (manager.findTaskById(newId) != null) {
-                                System.out.println("Задача с айди " + newId + " создана");
-                                final String response = gson.toJson(task);
-                                sendText(exchange, response);
-                                return;
+                        int newId = manager.createTask(task).getId();
+                        if (manager.findTaskById(newId) != null) {
+                            System.out.println("Задача с айди " + newId + " создана");
+                            final String response = gson.toJson(task);
+                            sendText(exchange, response);
+                            return;
 
-                            } else {
-                                System.out.println("Задача пересекается с существующими");
-                                sendHasInteractions(exchange);
-                            }
+                        } else {
+                            System.out.println("Задача пересекается с существующими");
+                            sendHasInteractions(exchange);
+                        }
                     }
                     break;
                 }
-                case "DELETE":{
+                case "DELETE": {
                     if (requestedId == null || requestedId == 0) {
                         manager.deleteAllTasks();
                         System.out.println("Все задачи удалены");
