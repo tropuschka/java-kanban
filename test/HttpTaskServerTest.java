@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -549,5 +550,33 @@ public class HttpTaskServerTest {
         List<Subtask> managerTask = manager.getAllSubtasks();
 
         assertEquals(0, managerTask.size(), "Incorrect number of tasks");
+    }
+
+    @Test
+    public void getHistory() throws IOException, InterruptedException {
+        Task task = new Task(0, "Task", "Description");
+        Task createdTask = manager.createTask(task);
+        Task task1 = new Task(0, "Task", "Description");
+        Task createdTask1 = manager.createTask(task1);
+        manager.findTaskById(createdTask.getId());
+        manager.findTaskById(createdTask1.getId());
+
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/history");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode());
+
+        ArrayList<Task> managerTask = manager.getHistory();
+        String jHistory = gson.toJson(managerTask.stream()
+                .map(Task::toString)
+                .collect(Collectors.joining("\n")));
+        assertEquals(jHistory, response.body());
+
+
+        assertNotNull(managerTask, "Tasks are not back");
+        assertEquals(2, managerTask.size(), "Incorrect number of tasks");
+        assertEquals("Task", managerTask.getFirst().getName(), "Incorrect task name");
     }
 }
