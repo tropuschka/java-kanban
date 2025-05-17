@@ -579,4 +579,30 @@ public class HttpTaskServerTest {
         assertEquals(2, managerTask.size(), "Incorrect number of tasks");
         assertEquals("Task", managerTask.getFirst().getName(), "Incorrect task name");
     }
+
+    @Test
+    public void getPrioritized() throws IOException, InterruptedException {
+        Task task = new Task(0, "Task", "Description", "2025-05-16 09:00", "PT15M");
+        Task task2 = new Task(0, "Task", "Description", "2025-05-18 09:05", "PT15M");
+        manager.createTask(task);
+        manager.createTask(task2);
+
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/priority");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode());
+
+        ArrayList<Task> managerTask = manager.getPrioritizedTasks();
+        String jHistory = gson.toJson(managerTask.stream()
+                .map(Task::toString)
+                .collect(Collectors.joining("\n")));
+        assertEquals(jHistory, response.body());
+
+
+        assertNotNull(managerTask, "Tasks are not back");
+        assertEquals(2, managerTask.size(), "Incorrect number of tasks");
+        assertEquals("Task", managerTask.getFirst().getName(), "Incorrect task name");
+    }
 }
