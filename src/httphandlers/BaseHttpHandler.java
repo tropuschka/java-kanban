@@ -62,10 +62,12 @@ public class BaseHttpHandler implements HttpHandler {
 
     protected void sendNotFound(HttpExchange exchange) throws IOException {
         byte[] response = "Not Found".getBytes(StandardCharsets.UTF_8);
-        exchange.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
+        Headers headers = exchange.getResponseHeaders();
+        headers.set("Content-Type", "application/json;charset=utf-8");
         exchange.sendResponseHeaders(404, response.length);
-        exchange.getResponseBody().write(response);
-        exchange.close();
+        try (OutputStream os = exchange.getResponseBody()) {
+            os.write(response);
+        }
     }
 
     protected void sendServerError(HttpExchange exchange) throws IOException {
