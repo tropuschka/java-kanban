@@ -3,6 +3,7 @@ package taskmodels;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Objects;
 
 public class Epic extends Task {
@@ -10,6 +11,10 @@ public class Epic extends Task {
 
     public Epic(Integer id, String name, String details) {
         super(id, name, details);
+    }
+
+    public Epic(Map<String, String> map, int id) {
+        super(map, id);
     }
 
     public String getWithSubs() {

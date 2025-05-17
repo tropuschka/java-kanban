@@ -3,6 +3,7 @@ package taskmodels;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import java.util.Objects;
 
 public class Task {
@@ -10,8 +11,8 @@ public class Task {
     private String details;
     private Integer id;
     private TaskStatus status;
-    protected LocalDateTime startTime;
-    protected Duration duration;
+    public LocalDateTime startTime;
+    public Duration duration;
     protected DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     public Task(Integer id, String name, String details) {
@@ -29,6 +30,20 @@ public class Task {
         this.startTime = LocalDateTime.parse(startTime, formatter);
         duration = duration.substring(2, duration.length() - 1);
         this.duration = Duration.ofMinutes(Integer.parseInt(duration));
+    }
+
+    public Task(Map<String, String> map, Integer id) {
+        if (id == null) this.id = 0;
+        this.name = map.get("name");
+        this.details = map.get("details");
+        this.status = TaskStatus.valueOf(map.get("status"));
+        String startTimeString = map.get("start-time");
+        String endTimeString = map.get("end-time");
+        if (startTimeString != null && endTimeString != null) {
+            this.startTime = LocalDateTime.parse(startTimeString);
+            LocalDateTime newEndTime = LocalDateTime.parse(endTimeString);
+            this.duration = Duration.between(this.startTime, newEndTime);
+        }
     }
 
     public String getName() {

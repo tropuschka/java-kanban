@@ -1,5 +1,6 @@
 package taskmodels;
 
+import java.util.Map;
 import java.util.Objects;
 
 public class Subtask extends Task {
@@ -13,6 +14,11 @@ public class Subtask extends Task {
     public Subtask(Integer id, String name, String details, Integer epicId, String startTime, String duration) {
         super(id, name, details, startTime, duration);
         this.epicId = epicId;
+    }
+
+    public Subtask(Map<String, String> map, int id) {
+        super(map, id);
+        epicId = Integer.parseInt(map.get("epic-id"));
     }
 
     public Integer getEpicId() {
