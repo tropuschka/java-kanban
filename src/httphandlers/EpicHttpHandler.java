@@ -74,7 +74,7 @@ public class EpicHttpHandler  extends BaseHttpHandler {
                     break;
                 }
                 case "DELETE":{
-                    if (requestedId == null) {
+                    if (requestedId == null || requestedId == 0) {
                         manager.deleteAllEpics();
                         System.out.println("Все эпики удалены");
                         sendSuccess(exchange);

@@ -375,9 +375,71 @@ public class HttpTaskServerTest {
     public void deleteTask() throws IOException, InterruptedException {
         Task task = new Task(0, "Task", "Description");
         Task createdTask = manager.createTask(task);
+        Task task1 = new Task(0, "Task", "Description");
+        manager.createTask(task1);
 
         HttpClient client = HttpClient.newHttpClient();
         URI url = URI.create("http://localhost:8080/task/" + createdTask.getId());
+        HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(201, response.statusCode());
+
+        List<Task> managerTask = manager.getAllTasks();
+
+        assertEquals(1, managerTask.size(), "Incorrect number of tasks");
+    }
+
+    @Test
+    public void deleteEpic() throws IOException, InterruptedException {
+        Epic task = new Epic(0, "Task", "Description");
+        Epic createdTask = manager.createEpic(task);
+        Epic task1 = new Epic(0, "Task", "Description");
+        manager.createEpic(task1);
+
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/epic/" + createdTask.getId());
+        HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(201, response.statusCode());
+
+        List<Epic> managerTask = manager.getAllEpic();
+
+        assertEquals(1, managerTask.size(), "Incorrect number of tasks");
+    }
+
+    @Test
+    public void deleteSubtask() throws IOException, InterruptedException {
+        Epic epic = new Epic(0, "Task", "Description");
+        Epic managerEpic = manager.createEpic(epic);
+        Subtask task = new Subtask(0, "Task", "Description", managerEpic.getId());
+        Subtask createdTask = manager.createSubtask(task);
+        Subtask task1 = new Subtask(0, "Task", "Description", managerEpic.getId());
+        manager.createSubtask(task1);
+
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/subtask/" + createdTask.getId());
+        HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(201, response.statusCode());
+
+
+        List<Subtask> managerTask = manager.getAllSubtasks();
+
+        assertEquals(1, managerTask.size(), "Incorrect number of tasks");
+    }
+
+    @Test
+    public void deleteTaskAll() throws IOException, InterruptedException {
+        Task task = new Task(0, "Task", "Description");
+        manager.createTask(task);
+        Task task1 = new Task(0, "Task", "Description");
+        manager.createTask(task1);
+
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/task");
         HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -389,12 +451,14 @@ public class HttpTaskServerTest {
     }
 
     @Test
-    public void deleteEpic() throws IOException, InterruptedException {
+    public void deleteEpicAll() throws IOException, InterruptedException {
         Epic task = new Epic(0, "Task", "Description");
-        Epic createdTask = manager.createEpic(task);
+        manager.createEpic(task);
+        Epic task1 = new Epic(0, "Task", "Description");
+        manager.createEpic(task1);
 
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/epic/" + createdTask.getId());
+        URI url = URI.create("http://localhost:8080/epic");
         HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -406,14 +470,16 @@ public class HttpTaskServerTest {
     }
 
     @Test
-    public void deleteSubtask() throws IOException, InterruptedException {
+    public void deleteSubtaskAll() throws IOException, InterruptedException {
         Epic epic = new Epic(0, "Task", "Description");
         Epic managerEpic = manager.createEpic(epic);
         Subtask task = new Subtask(0, "Task", "Description", managerEpic.getId());
-        Subtask createdTask = manager.createSubtask(task);
+        manager.createSubtask(task);
+        Subtask task1 = new Subtask(0, "Task", "Description", managerEpic.getId());
+        manager.createSubtask(task1);
 
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/subtask/" + createdTask.getId());
+        URI url = URI.create("http://localhost:8080/subtask");
         HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());

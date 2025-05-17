@@ -75,7 +75,7 @@ public class SubtaskHttpHandler  extends BaseHttpHandler {
                     break;
                 }
                 case "DELETE":{
-                    if (requestedId == null) {
+                    if (requestedId == null || requestedId == 0) {
                         manager.deleteAllSubtasks();
                         System.out.println("Все подзадачи удалены");
                         sendSuccess(exchange);

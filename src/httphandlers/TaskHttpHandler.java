@@ -77,7 +77,7 @@ public class TaskHttpHandler extends BaseHttpHandler {
                     break;
                 }
                 case "DELETE":{
-                    if (requestedId == null) {
+                    if (requestedId == null || requestedId == 0) {
                         manager.deleteAllTasks();
                         System.out.println("Все задачи удалены");
                         sendSuccess(exchange);
