@@ -48,7 +48,7 @@ public class EpicHttpHandler  extends BaseHttpHandler {
                         sendSuccess(exchange);
                     } else {
                         int newId = manager.createEpic(task).getId();
-                        if (manager.findEpicById(newId) != null) {
+                        if (newId != 0) {
                             System.out.println("Эпик с айди " + newId + " создан");
                             final String response = gson.toJson(task);
                             sendText(exchange, response);
@@ -67,12 +67,9 @@ public class EpicHttpHandler  extends BaseHttpHandler {
                         return;
                     }
 
-                    final Epic task = manager.findEpicById(requestedId);
-                    if (task != null) {
-                        manager.deleteEpic(requestedId);
-                        System.out.println("Эпик с айди " + requestedId + " удален");
-                        sendSuccess(exchange);
-                    }
+                    manager.deleteEpic(requestedId);
+                    System.out.println("Эпик с айди " + requestedId + " удален");
+                    sendSuccess(exchange);
                     break;
                 }
                 default: {

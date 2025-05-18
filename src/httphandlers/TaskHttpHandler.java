@@ -48,12 +48,11 @@ public class TaskHttpHandler extends BaseHttpHandler {
                         sendSuccess(exchange);
                     } else {
                         int newId = manager.createTask(task).getId();
-                        if (manager.findTaskById(newId) != null) {
+                        if (newId != 0) {
                             System.out.println("Задача с айди " + newId + " создана");
                             final String response = gson.toJson(task);
                             sendText(exchange, response);
                             return;
-
                         } else {
                             System.out.println("Задача пересекается с существующими");
                             sendHasInteractions(exchange);
@@ -68,13 +67,10 @@ public class TaskHttpHandler extends BaseHttpHandler {
                         sendSuccess(exchange);
                         return;
                     }
+                    manager.deleteTask(requestedId);
+                    System.out.println("Задача с айди " + requestedId + " удалена");
+                    sendSuccess(exchange);
 
-                    final Task task = manager.findTaskById(requestedId);
-                    if (task != null) {
-                        manager.deleteTask(requestedId);
-                        System.out.println("Задача с айди " + requestedId + " удалена");
-                        sendSuccess(exchange);
-                    }
                     break;
                 }
                 default: {

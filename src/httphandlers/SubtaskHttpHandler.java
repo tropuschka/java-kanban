@@ -48,7 +48,7 @@ public class SubtaskHttpHandler  extends BaseHttpHandler {
                         sendSuccess(exchange);
                     } else {
                         int newId = manager.createSubtask(task).getId();
-                        if (manager.findSubtaskById(newId) != null) {
+                        if (newId != 0) {
                             System.out.println("Подзадача с айди " + newId + " создана");
                             final String response = gson.toJson(task);
                             sendText(exchange, response);
@@ -67,12 +67,9 @@ public class SubtaskHttpHandler  extends BaseHttpHandler {
                         return;
                     }
 
-                    final Subtask task = manager.findSubtaskById(requestedId);
-                    if (task != null) {
-                        manager.deleteSubtask(task);
-                        System.out.println("Подзадача с айди " + requestedId + " удалена");
-                        sendSuccess(exchange);
-                    }
+                    manager.deleteSubtask(requestedId);
+                    System.out.println("Подзадача с айди " + requestedId + " удалена");
+                    sendSuccess(exchange);
                     break;
                 }
                 default: {

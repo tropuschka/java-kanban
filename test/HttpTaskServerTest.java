@@ -537,7 +537,7 @@ public class HttpTaskServerTest {
         Epic managerEpic = manager.createEpic(epic);
         Subtask task = new Subtask(0, "Task", "Description", managerEpic.getId());
         Subtask createdTask = manager.createSubtask(task);
-        manager.deleteSubtask(createdTask);
+        manager.deleteSubtask(createdTask.getId());
 
         HttpClient client = HttpClient.newHttpClient();
         URI url = URI.create("http://localhost:8080/subtask/" + createdTask.getId());
