@@ -1,18 +1,10 @@
 package httphandlers;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import managing.TaskManager;
 import taskmodels.Epic;
-import typeadapter.DurationTypeAdapter;
-import typeadapter.FormatterTypeAdapter;
-import typeadapter.LocalDateTypeAdapter;
 
 import java.io.IOException;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class EpicHttpHandler  extends BaseHttpHandler {
@@ -25,12 +17,6 @@ public class EpicHttpHandler  extends BaseHttpHandler {
         try {
             final String path = exchange.getRequestURI().getPath();
             final Integer requestedId = getIdFromPath(path);
-
-            Gson gson = new GsonBuilder()
-                    .registerTypeAdapter(LocalDateTime.class, new LocalDateTypeAdapter())
-                    .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
-                    .registerTypeAdapter(DateTimeFormatter.class, new FormatterTypeAdapter())
-                    .create();
 
             switch (exchange.getRequestMethod()) {
                 case "GET": {

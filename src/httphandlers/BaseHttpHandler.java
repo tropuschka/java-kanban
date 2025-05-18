@@ -19,6 +19,11 @@ import java.util.Optional;
 
 public class BaseHttpHandler implements HttpHandler {
     protected TaskManager manager;
+    Gson gson = new GsonBuilder()
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTypeAdapter())
+            .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
+            .registerTypeAdapter(DateTimeFormatter.class, new FormatterTypeAdapter())
+            .create();
 
     public BaseHttpHandler() {
         super();
@@ -95,11 +100,6 @@ public class BaseHttpHandler implements HttpHandler {
     }
 
     protected String readText(HttpExchange exchange) throws IOException {
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTypeAdapter())
-                .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
-                .registerTypeAdapter(DateTimeFormatter.class, new FormatterTypeAdapter())
-                .create();
         BufferedReader reader = new BufferedReader(new InputStreamReader(exchange.getRequestBody()));
         StringBuilder builder = new StringBuilder();
         String line;
