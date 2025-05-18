@@ -10,8 +10,8 @@ public class Task {
     private String details;
     private Integer id;
     private TaskStatus status;
-    public LocalDateTime startTime;
-    public Duration duration;
+    protected LocalDateTime startTime;
+    protected Duration duration;
     protected DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     public Task(Integer id, String name, String details) {
