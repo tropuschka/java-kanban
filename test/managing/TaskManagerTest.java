@@ -181,7 +181,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void deletingSubtask() {
-        taskManager.deleteSubtask(subtask1);
+        taskManager.deleteSubtask(subtask1.getId());
         assertNull(taskManager.findSubtaskById(3));
     }
 
